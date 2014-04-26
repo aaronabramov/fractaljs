@@ -4,8 +4,9 @@ var MANIFEST = {
 };
 
 (function () {
-    // Cache variable
-    var modules = {};
+    // Cache variables
+    var modules = {},
+        scriptTags = [];
 
     /**
      * Load script from the path and bind callback on onload event passing
@@ -18,6 +19,8 @@ var MANIFEST = {
     function loadScript(path, moduleName, callback) {
         var scriptTag = document.createElement('script');
         scriptTag.src = path;
+        // cache script tag for later cleanup
+        scriptTags.push(scriptTag);
         scriptTag.onload = function () { callback(requireSync(moduleName)); };
         document.body.appendChild(scriptTag);
     }
@@ -31,6 +34,21 @@ var MANIFEST = {
     function define(moduleName, fn) {
         // Cache module function in closure var
         modules[moduleName] = fn;
+    }
+
+    /**
+     * Synchronously require module and return populated exports object.
+     *
+     * @param moduleName {String} module name
+     * @throws Will throw error if module is not found in cache.
+     */
+    function requireSync(moduleName) {
+        // Init empty exports object and pass it into defining module function
+        var exports = {};
+        if (!modules[moduleName]) throw new Error ('module [' + moduleName +
+                                                   '] not found');
+        modules[moduleName](exports);
+        return exports;
     }
 
     /**
@@ -65,19 +83,16 @@ var MANIFEST = {
     }
 
     /**
-     * Synchronously require module and return populated exports object.
-     *
-     * @param moduleName {String} module name
-     * @throws Will throw error if module is not found in cache.
+     * Cleanup function for dev purposes
      */
-    function requireSync(moduleName) {
-        // Init empty exports object and pass it into defining module function
-        var exports = {};
-        if (!modules[moduleName]) throw new Error ('module [' + moduleName +
-                                                   '] not found');
-        modules[moduleName](exports);
-        return exports;
+    if (window.ASYNC_REQUIRE_DEV) {
+        define.cleanup = function () {
+            modules = {};
+            for (var scriptTag in scriptTags) scriptTag.remove();
+        };
     }
+    define.modules = modules;
+    define.scriptTags = scriptTags;
 
     window.define = define;
     window.require = require;
