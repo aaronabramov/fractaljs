@@ -1,0 +1,25 @@
+{
+  "name": "async-require",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dmitriiabramov/async-require.git"
+  },
+  "author": "Dmitrii Abramov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dmitriiabramov/async-require/issues"
+  },
+  "homepage": "https://github.com/dmitriiabramov/async-require",
+  "dependencies": {},
+  "devDependencies": {
+      "karma": "0.12.11",
+      "karma-chai": "0.1.0",
+      "karma-sinon": "1.0.3"
+    }
+}
