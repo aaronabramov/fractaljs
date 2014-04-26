@@ -2,11 +2,19 @@
   <head>
     <script src='async_require.js'></script>
     <script src='module1.js'></script>
+  </head>
+  <body>
     <script>
       module1 = requireSync('module1');
       module1.TEST_FUNC(11111);
+
+      require('package-module-1', function(m) {
+          m.PACKAGE_1_FUNC('testtesttest');
+        });
+
+      require('package-module-2', function(m) {
+          m.PACKAGE_2_FUNC('ttttt');
+      });
     </script>
-  </head>
-  <body>
   </body>
 </html>
