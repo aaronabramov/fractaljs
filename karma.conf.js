@@ -16,7 +16,7 @@ module.exports = function(config) {
         // list of files / patterns to load in the browser
         files: [
             'test/support/setup.js',
-            'src/async_require.js',
+            'src/assets/async_require.js',
             'test/**/*_test.js'
         ],
 
