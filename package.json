@@ -20,6 +20,7 @@
   "devDependencies": {
       "karma": "0.12.11",
       "karma-chai": "0.1.0",
-      "karma-sinon": "1.0.3"
+      "karma-sinon": "1.0.3",
+      "minimist": "0.0.8"
     }
 }

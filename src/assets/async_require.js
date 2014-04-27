@@ -1,8 +1,3 @@
-var MANIFEST = {
-    'package-module-1': 'package_1.js',
-    'package-module-2': 'package_1.js'
-};
-
 (function () {
     // Cache variables
     var modules = {},
