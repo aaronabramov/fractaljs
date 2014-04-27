@@ -82,15 +82,6 @@ var MANIFEST = {
         }
     }
 
-    /**
-     * Cleanup function for dev purposes
-     */
-    if (window.ASYNC_REQUIRE_DEV) {
-        define.cleanup = function () {
-            modules = {};
-            for (var scriptTag in scriptTags) scriptTag.remove();
-        };
-    }
     define.modules = modules;
     define.scriptTags = scriptTags;
 
