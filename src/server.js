@@ -17,7 +17,7 @@ var config = require(configPath);
  *      included in the pcakage
  */
 function compilePackage(packageName) {
-    var srcs = config[packageName].map(function () {
+    var srcs = config[packageName].map(function (fileName) {
         return fs.readFileSync(
             path.resolve(assetPath, fileName),
             {encoding: 'UTF-8'});
@@ -33,16 +33,15 @@ function compilePackage(packageName) {
 function compileMainPackage() {
     var src, asyncRequireSrc;
     asyncRequireSrc = fs.readFileSync(ASYNC_REQUIRE_PATH, {encoding: 'UTF-8'});
-    srcs = config.main_package.map(function (fileName) {
-    });
-    [asyncRequireSrc].concat(srcs).join("\n");
+    srcs = compilePackage('main');
+    return asyncRequireSrc + "\n" + srcs;
 }
 
 http.createServer(function (req, res) {
     var url = req.url;
     url = url.replace(/\.js/, '').replace(/^\//, '');
     res.writeHead(200, {'Content-Type': 'application/javascript'});
-    res.end('test');
+    res.end(compileMainPackage());
 }).listen(6969);
 
 console.log('Server is listening on 6969');
