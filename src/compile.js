@@ -1,5 +1,6 @@
 var fs = require('fs')
-    path = require('path'),
+    path = require('path')
+    Q = require('q'),
     config = require('./config.js'),
     DEFINE = 'define("',
     HEADER = '", function (exports) {',
@@ -10,8 +11,16 @@ function makeModuleName(filePath) {
 };
 
 function compile(filePath) {
-    var src = fs.readFileSync(filePath, {encoding: 'UTF-8'});
-    return DEFINE + makeModuleName(filePath) + HEADER + src + FOOTER;
+    var deferred = Q.defer();
+    fs.readFile(filePath, function (err, data) {
+        if (err) {
+            deferred.reject(err);
+        } else {
+            var src = DEFINE + makeModuleName(filePath) + HEADER + data + FOOTER;
+            deferred.resolve(src);
+        }
+    });
+    return deferred.promise;
 }
 
 module.exports = {

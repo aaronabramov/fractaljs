@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/dmitriiabramov/async-require",
   "dependencies": {
-      "minimist": "0.0.8"
+      "minimist": "0.0.8",
+      "q": "1.0.1"
   },
   "devDependencies": {
       "karma": "0.12.11",

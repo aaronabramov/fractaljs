@@ -12,10 +12,16 @@ config.assetPath = argv.path;
 if (!config.assetPath) throw new Error('path must be present');
 
 http.createServer(function (req, res) {
+    console.log('requested --- ' + req.url);
     var filePath = path.normalize(config.assetPath + req.url),
-        str = compile.compile(filePath);
-    res.writeHead(200, {'Content-Type': 'application/javascript'});
-    res.end(str);
+        promise = compile.compile(filePath);
+    promise.then(function (src) {
+        res.writeHead(200, {'Content-Type': 'application/javascript'});
+        res.end(src);
+    }).fail(function (err) {
+        res.writeHead(404, {'Content-Type': 'application/javascript'});
+        res.end();
+    });
 }).listen(6969);
 
 console.log('Server is listening on 6969');
