@@ -15,6 +15,17 @@ function makeModuleContent(name, src) {
     return DEFINE + name + HEADER + src + FOOTER;
 };
 
+/**
+ * Recursively compile file, include all files that are stated in directives
+ * example:
+ *      //= require ./main_2.js
+ *      //= require ./main_3.js
+ *      var sameVar = someFunction();
+ *      ... more code ...
+ *
+ * @param filePath {String} relative path to a file
+ * @return {Q.Promise} when resolved passes compiled module into callback func
+ */
 function compile(filePath) {
     var deferred = Q.defer();
     filePath = path.resolve(config.assetPath, filePath);
