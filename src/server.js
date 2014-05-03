@@ -13,7 +13,7 @@ if (!config.assetPath) throw new Error('path must be present');
 
 http.createServer(function (req, res) {
     console.log('requested --- ' + req.url);
-    var filePath = path.normalize(config.assetPath + req.url),
+    var filePath = '.' + req.url,
         promise = compile.compile(filePath);
     promise.then(function (src) {
         res.writeHead(200, {'Content-Type': 'application/javascript'});

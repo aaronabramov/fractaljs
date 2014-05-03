@@ -1,6 +1,3 @@
-define('main_2', function(exports) {
-    var main = requireSync('main');
-    console.log(main.value);
-});
-
-requireSync('main_2');
+var main = requireSync('main');
+console.log(main.value);
+exports['this is main_2 module'] = true;
