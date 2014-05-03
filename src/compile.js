@@ -36,7 +36,7 @@ function compile(filePath) {
             var filesToRequire = directives.extractDirectives(data.toString()),
                 promises = filesToRequire.map(compile);
             Q.all(promises).then(function(sources) {
-                var content = '// ' +
+                var content = '\n// ' +
                     filePath +
                     '\n' +
                     makeModuleContent(makeModuleName(filePath), data) +

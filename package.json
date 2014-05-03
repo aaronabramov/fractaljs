@@ -24,6 +24,7 @@
       "karma": "0.12.11",
       "karma-mocha": "~0.1",
       "karma-sinon-chai": "0.1.5",
-      "karma-phantomjs-launcher": "0.1.4"
+      "karma-phantomjs-launcher": "0.1.4",
+      "nodemon": "1.0.17"
     }
 }

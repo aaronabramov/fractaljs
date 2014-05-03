@@ -1,10 +1,13 @@
 async-require
 =============
 
+#### development
 ```shell
-npm install
-npm install -g nodemon
-nodemon src/server.js --assetPath `pwd`/example/assets
+make install && make dev
 ```
 
-##### run tests `make unit`
+#### run karma tests
+```shell
+brew install phantomjs
+make unit
+```
