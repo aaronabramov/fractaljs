@@ -1,3 +1,1 @@
-define('main', function (exports) {
-    exports.value = 'MAIN MODULE';
-});
+exports.value = 'MAIN MODULE';
