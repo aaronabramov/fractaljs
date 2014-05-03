@@ -16,11 +16,13 @@
     "url": "https://github.com/dmitriiabramov/async-require/issues"
   },
   "homepage": "https://github.com/dmitriiabramov/async-require",
-  "dependencies": {},
+  "dependencies": {
+      "minimist": "0.0.8"
+  },
   "devDependencies": {
       "karma": "0.12.11",
-      "karma-chai": "0.1.0",
-      "karma-sinon": "1.0.3",
-      "minimist": "0.0.8"
+      "karma-mocha": "~0.1",
+      "karma-sinon-chai": "0.1.5",
+      "karma-phantomjs-launcher": "0.1.4"
     }
 }
