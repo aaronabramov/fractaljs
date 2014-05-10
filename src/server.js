@@ -19,7 +19,6 @@ http.createServer(function (req, res) {
     if (req.url === '/lib.js') {
         fs.readFile('./src/assets/async_require.js', function (err, data) {
             res.writeHead(200, {'Content-Type': 'application/javascript'});
-            console.log(data);
             res.end(data);
         });
     } else {
