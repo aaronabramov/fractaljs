@@ -44,7 +44,7 @@
         if (!modules[moduleName]) throw new Error ('module [' + moduleName +
                                                    '] not found');
         modules[moduleName](exports, module);
-        return exports;
+        return module.exports;
     }
 
     /**
