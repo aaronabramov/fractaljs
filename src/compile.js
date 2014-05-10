@@ -4,7 +4,7 @@ var fs = require('fs')
     directives = require('./directives'),
     config = require('./config.js'),
     DEFINE = 'define("',
-    HEADER = '", function (exports) {',
+    HEADER = '", function (exports) {\n',
     FOOTER = '});';
 
 function makeModuleName(filePath) {
