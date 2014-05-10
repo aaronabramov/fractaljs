@@ -16,6 +16,12 @@ function makeModuleContent(name, src) {
     return DEFINE + name + HEADER + src + FOOTER;
 };
 
+/**
+ * @param filePath {String} path to the root file
+ * @param data {String} it's source code
+ * @param wrap {Boolean} if true, wrap root file in a module
+ * @param sources {Array} descendant files to append to root file
+ */
 function joinSources(filePath, data, wrap, sources) {
     var content = '\n// ' +
         filePath +
@@ -29,6 +35,7 @@ function joinSources(filePath, data, wrap, sources) {
 /**
  * Recursively compile file, include all files that are stated in directives
  * example:
+ *      //= require_lib
  *      //= require ./main_2.js
  *      //= require ./main_3.js
  *      var sameVar = someFunction();
@@ -39,7 +46,7 @@ function joinSources(filePath, data, wrap, sources) {
  * @return {Q.Promise} when resolved passes compiled module into callback func
  */
 function compile(filePath, wrap) {
-    typeof wrap === 'undefined' || (wrap = true);
+    typeof wrap === 'undefined' && (wrap = true);
     var deferred = Q.defer();
     filePath = path.resolve(config.assetPath, filePath);
     fs.readFile(filePath, function (err, data) {
@@ -85,7 +92,7 @@ function directiveToFiles(d) {
     var type = d[0];
     switch (d[0]) {
         case 'require': return [{wrap: true, path: d[1]}];
-        case 'require_lib': return [{wrap: false, puth: LIB_PATH}];
+        case 'require_lib': return [{wrap: false, path: LIB_PATH}];
     }
 }
 
