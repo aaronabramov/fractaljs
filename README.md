@@ -3,8 +3,8 @@ async-require
 
 ```javascript
 // app.js
-// require_lib
-// require .submodule.js
+//= require_lib
+//= require ./submodule.js
 
 exports.f = function () { return 'app'; };
 ```
@@ -24,16 +24,20 @@ exports.f = function () { return 'submodule'; };
 </script>
 ```
 
-##### Proxy requests from clj app
+##### Proxy requests from compojure app
 ```clojure
+(ns my-namespace
+  (:require [compojure.core :refer [defroutes GET]]
+            [org.httpkit.client :as http]))
+
 (defn proxy-request [path]
   (:body @(http/get (str "http://localhost:6969/" path) {:as :text})))
 
 (defroutes js-routes
   (GET "/js/:path" [path]
-         {:status 200
-          :headers {"Content-Type" "application/javascript"}
-          :body (proxy-request path)}))
+       {:status 200
+        :headers {"Content-Type" "application/javascript"}
+        :body (proxy-request path)}))
 ```
 
 
