@@ -16,7 +16,7 @@
         scriptTag.src = path;
         // cache script tag for later cleanup
         scriptTags.push(scriptTag);
-        scriptTag.onload = function () { callback(requireSync(moduleName)); };
+        scriptTag.onload = function () { callback(require(moduleName)); };
         document.body.appendChild(scriptTag);
     }
 
@@ -37,7 +37,7 @@
      * @param moduleName {String} module name
      * @throws Will throw error if module is not found in cache.
      */
-    function requireSync(moduleName) {
+    function require(moduleName) {
         // Init empty exports object and pass it into defining module function
         var exports = {};
         if (!modules[moduleName]) throw new Error ('module [' + moduleName +
@@ -48,7 +48,7 @@
 
     /**
      * Try to lookup module in cache, if module has been already loaded
-     *      return populated exports object via requireSync function, if
+     *      return populated exports object via require function, if
      *      module is not loaded but present in MANIFEST list then initialize
      *      async loading of the scrypt containing this module.
      *
@@ -59,10 +59,10 @@
      * @throws Will throw an error if module is not foind in cache or package
      *      files.
      */
-    function require(moduleName, callback) {
+    function use(moduleName, callback) {
         if (modules[moduleName]) {
             // If module is already loaded then defer callback invokation
-            setTimeout(function () { callback(requireSync(moduleName)); }, 1);
+            setTimeout(function () { callback(require(moduleName)); }, 1);
         } else {
             // else try to find module name in the manifest
             for (var m in MANIFEST) {
@@ -82,5 +82,5 @@
 
     window.define = define;
     window.require = require;
-    window.requireSync = requireSync;
+    window.use = use;
 })();
