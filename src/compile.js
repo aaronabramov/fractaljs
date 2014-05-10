@@ -5,7 +5,8 @@ var fs = require('fs')
     config = require('./config.js'),
     DEFINE = 'define("',
     HEADER = '", function (exports, module) {\n',
-    FOOTER = '});';
+    FOOTER = '});',
+    LIB_PATH = path.resolve(__dirname, './assets/async_require.js');
 
 function makeModuleName(filePath) {
     return path.relative(config.assetPath, filePath);
@@ -33,7 +34,8 @@ function compile(filePath) {
         if (err) {
             deferred.reject(err);
         } else {
-            var filesToRequire = directives.extract(data.toString()),
+            var directivesList = directives.extract(data.toString()),
+                filesToRequire = processDirectives(directivesList),
                 promises = filesToRequire.map(compile);
             Q.all(promises).then(function(sources) {
                 var content = '\n// ' +
@@ -48,6 +50,26 @@ function compile(filePath) {
         }
     });
     return deferred.promise;
+}
+
+/**
+ * @param directives {Array} [['require', 'main.js'], ['require_lib']]
+ */
+function processDirectives(directives) {
+    var filePaths = [];
+
+    directives.forEach(function (d) {
+        filePaths.push(directiveToFiles(d));
+    });
+    return filePaths;
+}
+
+function directiveToFiles(d) {
+    var type = d[0];
+    switch (d[0]) {
+        case 'require': return d[1];
+        case 'require_lib': return LIB_PATH;
+    }
 }
 
 module.exports = {
