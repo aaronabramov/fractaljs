@@ -13,15 +13,26 @@ if (!config.assetPath) throw new Error('path must be present');
 
 http.createServer(function (req, res) {
     console.log('requested --- ' + req.url);
-    var filePath = '.' + req.url,
-        promise = compile.compile(filePath);
-    promise.then(function (src) {
-        res.writeHead(200, {'Content-Type': 'application/javascript'});
-        res.end(src);
-    }).fail(function (err) {
-        res.writeHead(404, {'Content-Type': 'application/javascript'});
-        res.end();
-    });
+    // TODO: move lib.js to directives
+    // e.g.
+    //      //= require_lib
+    if (req.url === '/lib.js') {
+        fs.readFile('./src/assets/async_require.js', function (err, data) {
+            res.writeHead(200, {'Content-Type': 'application/javascript'});
+            console.log(data);
+            res.end(data);
+        });
+    } else {
+        var filePath = '.' + req.url,
+            promise = compile.compile(filePath);
+        promise.then(function (src) {
+            res.writeHead(200, {'Content-Type': 'application/javascript'});
+            res.end(src);
+        }).fail(function (err) {
+            res.writeHead(404, {'Content-Type': 'application/javascript'});
+            res.end();
+        });
+    }
 }).listen(6969);
 
 console.log('Server is listening on 6969');
