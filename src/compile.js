@@ -16,6 +16,16 @@ function makeModuleContent(name, src) {
     return DEFINE + name + HEADER + src + FOOTER;
 };
 
+function joinSources(filePath, data, wrap, sources) {
+    var content = '\n// ' +
+        filePath +
+        '\n';
+    if (wrap) {
+        content += makeModuleContent(makeModuleName(filePath), data);
+    } else { content += data }
+    return content + '\n' + sources.join('\n\n');
+}
+
 /**
  * Recursively compile file, include all files that are stated in directives
  * example:
@@ -25,9 +35,11 @@ function makeModuleContent(name, src) {
  *      ... more code ...
  *
  * @param filePath {String} relative path to a file
+ * @param wrap {Boolean} if this file needs to be wrapped in a module
  * @return {Q.Promise} when resolved passes compiled module into callback func
  */
-function compile(filePath) {
+function compile(filePath, wrap) {
+    typeof wrap === 'undefined' || (wrap = true);
     var deferred = Q.defer();
     filePath = path.resolve(config.assetPath, filePath);
     fs.readFile(filePath, function (err, data) {
@@ -36,14 +48,12 @@ function compile(filePath) {
         } else {
             var directivesList = directives.extract(data.toString()),
                 filesToRequire = processDirectives(directivesList),
-                promises = filesToRequire.map(compile);
+                promises = filesToRequire.map(function (file) {
+                    return compile(file.path, file.wrap);
+                });
             Q.all(promises).then(function(sources) {
-                var content = '\n// ' +
-                    filePath +
-                    '\n' +
-                    makeModuleContent(makeModuleName(filePath), data) +
-                    sources.join('\n\n');
-                deferred.resolve(content);
+                var d = joinSources(filePath, data, wrap, sources);
+                deferred.resolve(d)
             }).fail(function (err) {
                 console.log(err);
             });
@@ -54,21 +64,28 @@ function compile(filePath) {
 
 /**
  * @param directives {Array} [['require', 'main.js'], ['require_lib']]
+ * @return {Array} of objects [{wrap: true, path: './path.js'}]
  */
 function processDirectives(directives) {
     var filePaths = [];
-
     directives.forEach(function (d) {
-        filePaths.push(directiveToFiles(d));
+        filePaths = filePaths.concat(directiveToFiles(d));
     });
     return filePaths;
 }
 
+/**
+ * Extract filenames that need to be required from directive
+ * @param d {Array} [directiveType, directiveValue]
+ * @return {Array} of objects:
+ *      @return wrap {Boolean} if this file needs to be wrapped in module
+ *      @return path {String} path to the file
+ */
 function directiveToFiles(d) {
     var type = d[0];
     switch (d[0]) {
-        case 'require': return d[1];
-        case 'require_lib': return LIB_PATH;
+        case 'require': return [{wrap: true, path: d[1]}];
+        case 'require_lib': return [{wrap: false, puth: LIB_PATH}];
     }
 }
 
