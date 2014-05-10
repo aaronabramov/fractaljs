@@ -18,6 +18,8 @@
   "homepage": "https://github.com/dmitriiabramov/async-require",
   "dependencies": {
       "minimist": "0.0.8",
+      "haml-coffee": "1.14.1",
+      "glob": "3.2.9",
       "q": "1.0.1"
   },
   "devDependencies": {

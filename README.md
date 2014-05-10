@@ -58,3 +58,4 @@ make unit
 - throw error in main thread (main app) on compile error
 - production build
 - generate layered build config file automatically (which package cantains required module)
+- compile coffee/hamlc
