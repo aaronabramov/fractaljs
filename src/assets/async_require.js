@@ -39,10 +39,11 @@
      */
     function require(moduleName) {
         // Init empty exports object and pass it into defining module function
-        var exports = {};
+        var exports = {},
+            module = {exports: exports};
         if (!modules[moduleName]) throw new Error ('module [' + moduleName +
                                                    '] not found');
-        modules[moduleName](exports);
+        modules[moduleName](exports, module);
         return exports;
     }
 
