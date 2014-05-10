@@ -56,7 +56,7 @@ function compile(filePath, wrap) {
             var directivesList = directives.extract(data.toString()),
                 filesToRequire = processDirectives(directivesList),
                 promises = filesToRequire.map(function (file) {
-                    return compile(file.path, file.wrap);
+                    return compile(file.path, file.wrap); // recur
                 });
             Q.all(promises).then(function(sources) {
                 var d = joinSources(filePath, data, wrap, sources);
