@@ -15,9 +15,9 @@ module.exports = function(config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'test/support/setup.js',
+            'karma/support/setup.js',
             'src/assets/async_require.js',
-            'test/**/*_test.js'
+            'karma/**/*_test.js'
         ],
 
 

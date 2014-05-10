@@ -1,4 +1,4 @@
-var HEADER_PATTERN = /\/\/\s*=\s*require\s*([\w\.\/]+)\s*$/gm;
+var HEADER_PATTERN = /\/\/\s*=\s*(require\w*)\s*([\w\.\/]+)\s*$/gm;
 
 module.exports = {
     /**
