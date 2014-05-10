@@ -1,13 +1,17 @@
-var HEADER_PATTERN = /\/\/\s*=\s*(require\w*)\s*([\w\.\/]+)\s*$/gm;
+var HEADER_PATTERN = /\/\/\s*=\s*(require\w*)\s*([\w\.\/]*)\s*$/gm;
 
 module.exports = {
     /**
-     * @return {Array} array of parsed filenames "['./main.js', './main2.js']"
+     * @return {Array} array of directives and their values
      */
-    extractDirectives: function (src) {
+    extract: function (src) {
         var match, fileNames = [];
         while (match = HEADER_PATTERN.exec(src)) {
-            fileNames.push(match[1]);
+            var directive = match[1],
+                value = match[2]
+                result = [directive];
+            value && result.push(value);
+            fileNames.push(result);
         }
         return fileNames;
     }

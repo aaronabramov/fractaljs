@@ -33,7 +33,7 @@ function compile(filePath) {
         if (err) {
             deferred.reject(err);
         } else {
-            var filesToRequire = directives.extractDirectives(data.toString()),
+            var filesToRequire = directives.extract(data.toString()),
                 promises = filesToRequire.map(compile);
             Q.all(promises).then(function(sources) {
                 var content = '\n// ' +
