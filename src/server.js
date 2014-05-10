@@ -17,7 +17,8 @@ http.createServer(function (req, res) {
     // e.g.
     //      //= require_lib
     if (req.url === '/lib.js') {
-        fs.readFile('./src/assets/async_require.js', function (err, data) {
+        var libPath = path.resolve(__dirname, 'assets/async_require.js');
+        fs.readFile(libPath, function (err, data) {
             res.writeHead(200, {'Content-Type': 'application/javascript'});
             res.end(data);
         });
