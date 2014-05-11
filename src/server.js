@@ -12,7 +12,7 @@ config.assetPath = argv.path;
 if (!config.assetPath) throw new Error('path must be present');
 
 http.createServer(function (req, res) {
-    console.log('requested --- ' + req.url);
+    console.log('requested :::: ' + req.url);
     // TODO: move lib.js to directives
     // e.g.
     //      //= require_lib
@@ -29,6 +29,7 @@ http.createServer(function (req, res) {
             res.writeHead(200, {'Content-Type': 'application/javascript'});
             res.end(src);
         }).fail(function (err) {
+            console.log(err);
             res.writeHead(404, {'Content-Type': 'application/javascript'});
             res.end();
         });
