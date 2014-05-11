@@ -17,12 +17,13 @@ http.createServer(function (req, res) {
     // e.g.
     //      //= require_lib
     var filePath = '.' + req.url,
-        promise = compile.compile(filePath);
+        promise = compile.compile(filePath, false);
     promise.then(function (src) {
         res.writeHead(200, {'Content-Type': 'application/javascript'});
         res.end(src);
     }).fail(function (err) {
-        console.log(err);
+        console.log(err)
+        console.log(err && err.stack);
         res.writeHead(404, {'Content-Type': 'application/javascript'});
         res.end();
     });

@@ -59,3 +59,4 @@ make unit
 - production build
 - generate layered build config file automatically (which package cantains required module)
 - compile coffee/hamlc
+- disable directives for certain types (hamlc)

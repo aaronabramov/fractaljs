@@ -3,6 +3,7 @@ var fs = require('fs')
     Q = require('q'),
     directives = require('./directives'),
     config = require('./config.js'),
+    preprocessors = require('./preprocessors.js'),
     glob = require('glob'),
     DEFINE = 'define("',
     HEADER = '", function (exports, module) {\n',
@@ -11,8 +12,14 @@ var fs = require('fs')
     NOT_FOUND_ERRNO = 34,
     EXTENSION_TO_FILETYPE_MAP = {
         'js':       'js',
-        'hamlc':    'hamlc'
+        'hamlc':    'hamlc',
+        'coffee':   'coffee'
+    },
+    TYPE_TO_PREPROCESSOR_MAP = {
+        'hamlc':    'hamlc',
+        'coffee':   'coffee'
     };
+
 
 function makeModuleName(filePath) {
     return path.relative(config.assetPath, filePath);
@@ -29,9 +36,12 @@ function makeModuleContent(name, src) {
  * @param sources {Array} descendant files to append to root file
  */
 function joinSources(filePath, data, wrap, sources) {
-    var content = '\n// ' +
-        filePath +
-        '\n';
+    var content = '\n// ' + filePath + '\n',
+        fileType = extractFileType(filePath),
+        preprocessor;
+    if (preprocessor = TYPE_TO_PREPROCESSOR_MAP[fileType]) {
+        data = preprocessors[preprocessor](data.toString());
+    }
     if (wrap) {
         content += makeModuleContent(makeModuleName(filePath), data);
     } else { content += data }
@@ -62,6 +72,7 @@ function compile(filePath, wrap) {
     var deferred = Q.defer();
     typeof wrap === 'undefined' && (wrap = true);
     filePath = path.resolve(config.assetPath, filePath);
+    // if path has extension, look for exact match, if not then try to match glob
     if (extractFileType(filePath)) {
         return compilePath(filePath, wrap, deferred)
     } else {
@@ -96,7 +107,6 @@ function compilePath(filePath, wrap, deferred) {
 function compileGlob(filePath, wrap, deferred) {
     var pattern = filePath + '.*';
     glob(pattern, {cwd: config.assetPath}, function (err, files) {
-        console.log(files);
         if (err) return deferred.reject(err);
         if (!files.length) { return deferred.reject('no files found. path: ' + pattern); }
         compilePath(files[0], wrap, deferred);
