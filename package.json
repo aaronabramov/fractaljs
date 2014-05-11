@@ -19,6 +19,7 @@
   "dependencies": {
       "minimist": "0.0.8",
       "haml-coffee": "1.14.1",
+      "coffee-script": "1.7.1",
       "glob": "3.2.9",
       "q": "1.0.1"
   },
