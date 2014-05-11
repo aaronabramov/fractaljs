@@ -16,24 +16,16 @@ http.createServer(function (req, res) {
     // TODO: move lib.js to directives
     // e.g.
     //      //= require_lib
-    if (req.url === '/lib.js') {
-        var libPath = path.resolve(__dirname, 'assets/async_require.js');
-        fs.readFile(libPath, function (err, data) {
-            res.writeHead(200, {'Content-Type': 'application/javascript'});
-            res.end(data);
-        });
-    } else {
-        var filePath = '.' + req.url,
-            promise = compile.compile(filePath);
-        promise.then(function (src) {
-            res.writeHead(200, {'Content-Type': 'application/javascript'});
-            res.end(src);
-        }).fail(function (err) {
-            console.log(err);
-            res.writeHead(404, {'Content-Type': 'application/javascript'});
-            res.end();
-        });
-    }
+    var filePath = '.' + req.url,
+        promise = compile.compile(filePath);
+    promise.then(function (src) {
+        res.writeHead(200, {'Content-Type': 'application/javascript'});
+        res.end(src);
+    }).fail(function (err) {
+        console.log(err);
+        res.writeHead(404, {'Content-Type': 'application/javascript'});
+        res.end();
+    });
 }).listen(6969);
 
 console.log('Server is listening on 6969');
