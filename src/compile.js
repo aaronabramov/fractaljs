@@ -59,12 +59,13 @@ function extractFileType(filePath) {
  * @return {Q.Promise} when resolved passes compiled module into callback func
  */
 function compile(filePath, wrap) {
+    var deferred = Q.defer();
     typeof wrap === 'undefined' && (wrap = true);
     filePath = path.resolve(config.assetPath, filePath);
     if (extractFileType(filePath)) {
-        return compilePath(filePath, wrap)
+        return compilePath(filePath, wrap, deferred)
     } else {
-        return compileGlob(filePath, wrap);
+        return compileGlob(filePath, wrap, deferred);
     }
 }
 
@@ -72,10 +73,9 @@ function compile(filePath, wrap) {
  * compiles file from path. Path should exactly match the file
  * @param filePath {String}
  * @param wrap {Boolean} whether file needs to be wrapped in module
- * @param [deferred] {deferred} optional deferred object
+ * @param [deferred] {deferred} deferred object
  */
 function compilePath(filePath, wrap, deferred) {
-    deferred || (deferred = Q.defer());
     fs.readFile(filePath, function (err, data) {
         if (err) {
             deferred.reject(err);
@@ -91,10 +91,10 @@ function compilePath(filePath, wrap, deferred) {
  * will be compiled
  * @param filePath {String} file path [without extension]
  * @param wrap {Boolean} whether file needs to be wrapped in module
+ * @param [deferred] {deferred} deferred object
  */
-function compileGlob(filePath, wrap) {
-    var deferred = Q.defer(),
-        pattern = filePath + '.*';
+function compileGlob(filePath, wrap, deferred) {
+    var pattern = filePath + '.*';
     glob(pattern, {cwd: config.assetPath}, function (err, files) {
         console.log(files);
         if (err) return deferred.reject(err);
