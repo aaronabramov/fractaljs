@@ -17,7 +17,7 @@ http.createServer(function (req, res) {
     // e.g.
     //      //= require_lib
     var filePath = '.' + req.url,
-        promise = compile.compile(filePath, false);
+        promise = compile.compile(filePath);
     promise.then(function (src) {
         res.writeHead(200, {'Content-Type': 'application/javascript'});
         res.end(src);

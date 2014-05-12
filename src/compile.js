@@ -45,7 +45,7 @@ function joinSources(filePath, data, wrap, sources) {
     if (wrap) {
         content += makeModuleContent(makeModuleName(filePath), data);
     } else { content += data }
-    return content + '\n' + sources.join('\n\n');
+    return sources.join('\n\n') + '\n' + content;
 }
 
 function extractFileType(filePath) {
