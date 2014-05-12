@@ -9,7 +9,6 @@ var fs = require('fs')
     HEADER = '", function (exports, module) {\n',
     FOOTER = '});',
     LIB_PATH = path.resolve(__dirname, './assets/async_require.js'),
-    NOT_FOUND_ERRNO = 34,
     EXTENSION_TO_FILETYPE_MAP = {
         'js':       'js',
         'hamlc':    'hamlc',
