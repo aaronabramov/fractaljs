@@ -1,8 +1,5 @@
 var http = require('http'),
-    fs = require('fs'),
-    path = require('path'),
     argv = require('minimist')(process.argv.slice(2)),
-    ASYNC_REQUIRE_PATH = './assets/async_require.js',
     config = require('./config.js'),
     compile = require('./compile.js');
 
