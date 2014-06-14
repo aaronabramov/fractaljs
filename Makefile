@@ -3,10 +3,10 @@ karma:
 	./node_modules/karma/bin/karma start
 
 test:
-	./node_modules/mocha/bin/mocha --reporter nyan
+	./node_modules/mocha/bin/mocha --reporter spec
 
 watch_test:
-	./node_modules/mocha/bin/mocha --watch
+	./node_modules/mocha/bin/mocha --watch --reporter spec
 
 install:
 	npm install
