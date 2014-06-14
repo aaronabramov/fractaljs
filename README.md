@@ -63,10 +63,10 @@ make unit
 
 
 ##### Building process TODO:
-Step 1: Create hash-map with key being the file path relative to fixed location (/ or asset_root) and value being the file content string
-Step 2: Read the first required file and store it's content into hash map
-Step 3: Extract directive list and store inside directives data structure
-Step 4: Recursively go through files that were in first file directives and store them in hash-map data structure the same way
-Step 5: Based on stored directives, order included files and exclude them if any of the excluding directives are present in files
-Step 6: Run files content through preprocessors (compile hamlc, coffee or wrap in commonjs modules) resulting
-Step 7: Return resulting hash map where keys are required file_names (e.g. tmpl/template.hamlc.js, app.coffee.js [append .js at the end to allaw two different files with the same base name to be in one loctation 'layout.coffee' and 'layout.hamlc']) which can be served as separate files (debug mode) ore joined in one string and streamed altogether
+- Step 1: Create hash-map with key being the file path relative to fixed location (/ or asset_root) and value being the file content string
+- Step 2: Read the first required file and store it's content into hash map
+- Step 3: Extract directive list and store inside directives data structure
+- Step 4: Recursively go through files that were in first file directives and store them in hash-map data structure the same way
+- Step 5: Based on stored directives, order included files and exclude them if any of the excluding directives are present in files
+- Step 6: Run files content through preprocessors (compile hamlc, coffee or wrap in commonjs modules) resulting
+- Step 7: Return resulting hash map where keys are required file_names (e.g. tmpl/template.hamlc.js, app.coffee.js [append .js at the end to allaw two different files with the same base name to be in one loctation 'layout.coffee' and 'layout.hamlc']) which can be served as separate files (debug mode) ore joined in one string and streamed altogether
