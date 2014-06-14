@@ -12,6 +12,6 @@ install:
 	npm install
 
 dev:
-	nodemon src/server --path `pwd`/example/assets
+	nodemon src/app --path `pwd`/example/assets
 
 .PHONY: karma test
