@@ -1,5 +1,6 @@
 async-require
 =============
+[![Build Status](https://travis-ci.org/dmitriiabramov/async-require.svg?branch=master)](https://travis-ci.org/dmitriiabramov/async-require)
 
 ```javascript
 // app.js
