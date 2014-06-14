@@ -70,3 +70,28 @@ make unit
 - Step 5: Based on stored directives, order included files and exclude them if any of the excluding directives are present in files
 - Step 6: Run files content through preprocessors (compile hamlc, coffee or wrap in commonjs modules) resulting
 - Step 7: Return resulting hash map where keys are required file_names (e.g. tmpl/template.hamlc.js, app.coffee.js [append .js at the end to allaw two different files with the same base name to be in one loctation 'layout.coffee' and 'layout.hamlc']) which can be served as separate files (debug mode) ore joined in one string and streamed altogether
+
+
+##### Fetching files from client app TODO:
+two modes exist: `combined` and `debug`
+if file is issued from the client app by http, response should always look like a list of file paths with their content
+e.g.
+JSON request
+```
+GET /application.js
+Accept-Type: 'application/json'
+```
+
+response:
+```
+    HTTP/1.1 200 OK
+    Content-Type: 'application/json'
+
+    {
+        "application.coffee.js": "function a() { return 'stuff' }",
+        "required_template.hamlc.js": "<h1>stuff</h1>"
+    }
+```
+
+- Option 1: Compined mode. all files that are erquired from within `application.coffee.js` are concatenated in it's content. response contains just one key/val pair that is then transformed into one <script> tag in the client app
+- Option 2: Debug mode. all the files that are required from withi `application.coffee.js` returned in separate key/val pairs. this will result in multiple <script> tags per file in client app
