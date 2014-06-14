@@ -93,5 +93,5 @@ response:
     }
 ```
 
-- Option 1: Compined mode. all files that are erquired from within `application.coffee.js` are concatenated in it's content. response contains just one key/val pair that is then transformed into one <script> tag in the client app
-- Option 2: Debug mode. all the files that are required from withi `application.coffee.js` returned in separate key/val pairs. this will result in multiple <script> tags per file in client app
+- Option 1: Compined mode. all files that are erquired from within `application.coffee.js` are concatenated in it's content. response contains just one key/val pair that is then transformed into one \<script> tag in the client app
+- Option 2: Debug mode. all the files that are required from withi `application.coffee.js` returned in separate key/val pairs. this will result in multiple \<script> tags per file in client app
