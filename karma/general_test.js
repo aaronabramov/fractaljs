@@ -6,24 +6,24 @@ describe('general behavior', function () {
         });
     });
 
-    describe('#requireSync', function () {
+    describe('#require', function () {
         it('requires module syncronously', function () {
             define('module-name', function (exports) {
                 exports.testVal = 'test';
             });
-            requireSync('module-name').testVal.should.equal('test');
+            require('module-name').testVal.should.equal('test');
         });
 
         it('throws error if module is not defined', function () {
-            expect(function () { requireSync('nod-defined'); })
+            expect(function () { require('nod-defined'); })
                 .to.throw(/not found/);
         });
     });
 
-    describe('#require', function () {
+    describe('#use', function () {
         it('requires module async if its defined', function (done) {
             define('test-module', function (exports) { exports.a = 'test'; } );
-            require('test-module', function(module) {
+            use('test-module', function(module) {
                 module.a.should.equal('test');
                 done();
             });

@@ -4,6 +4,8 @@ karma:
 
 test:
 	./node_modules/mocha/bin/mocha --reporter spec
+	./node_modules/karma/bin/karma start --single-run
+
 
 watch_test:
 	./node_modules/mocha/bin/mocha --watch --reporter spec
