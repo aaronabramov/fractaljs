@@ -13,7 +13,7 @@ describe('directive_to_files.js', function() {
         config.assetPath = path.resolve(__dirname, './fixtures/directives');
         this.filePath = path.resolve(__dirname, './fixtures/directives/directives.js');
         fs.readFile(this.filePath, function(err, data) {
-            _this.directives = new Directives(data.toString());
+            _this.directives = new Directives(this.filePath, data.toString());
             done();
         });
     });

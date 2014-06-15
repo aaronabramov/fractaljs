@@ -12,7 +12,7 @@ describe('directives.js', function() {
         config.assetPath = path.resolve(__dirname, './fixtures/directives');
         this.filePath = path.resolve(__dirname, './fixtures/directives/directives.js');
         fs.readFile(this.filePath, function(err, data) {
-            _this.subject = new Directives(data.toString());
+            _this.subject = new Directives(_this.filePath, data.toString());
             done();
         });
     });
@@ -32,6 +32,26 @@ describe('directives.js', function() {
                 ['require_directory', './directory'],
                 ['exclude', './exclude_file.js']
             ]);
+        });
+    });
+
+    describe('#filesToRequire', function() {
+        it('returns list of files to require', function(done) {
+            try {
+                this.subject.filesToRequire().then(function(list) {
+                    expect(list[0]).to.contain('index.js');
+                    expect(list[1]).to.contain('module1.js');
+                    expect(list[2]).to.contain('tree/file1.js');
+                    expect(list[3]).to.contain('tree/subdir/subdir_file1.hamlc');
+                    expect(list[4]).to.contain('directory/file1.coffee');
+                    expect(list[5]).to.contain('directory/file1.js');
+                    done();
+                }).fail(function(err) {
+                    done(err);
+                });
+            } catch (err) {
+                done(err);
+            }
         });
     });
 

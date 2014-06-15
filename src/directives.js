@@ -11,33 +11,37 @@ var config = require('./config.js'),
     ],
     DIRECTIVE_PATTERN = new RegExp("\\/\\/\\s*=\\s*(" + AVAILABLE_DIRECTIVE_TYPES.join('|') + ")(.*)$", "gm");
 
-function Directives(content) {
+function Directives(path, content) {
+    this.path = path;
     this.list = extract(content);
 }
 
 Directives.prototype = {
-    filesToRequire: function(root) {
-        var deferred = Q.defer(),
-            filesPaths = [];
-        this.list.map(function(directive) {});
+    /**
+     * @return {Q.promise} resolves with list of files to require
+     */
+    filesToRequire: function() {
+        var _this = this,
+            deferred = Q.defer(),
+            filesPaths = [],
+            promises = this.list.map(function(directive) {
+                return directiveToFiles.getFiles(_this.path, directive);
+            });
+        Q.all(promises).then(function(fileLists) {
+            var files = [];
+            fileLists.forEach(function(list) {
+                files = files.concat(list);
+            });
+            deferred.resolve(files);
+        }).fail(function(err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
     },
     _getDirectivesByType: function(type) {
         return this.list.filter(function(directive) {
             return directive[0] === type;
         });
-    },
-    /**
-     * Get files from directory. This is a shallow require. files from
-     * subdirectories will not be required
-     */
-    _getDirectoryFiles: function(root, directive) {
-        return directiveToFiles.getFiles(root, directive);
-    },
-    /**
-     * Get all files from directory reculsively, including files in subdirectories
-     */
-    _getTreeFiles: function(root, directive) {
-        return directiveToFiles.getFiles(root, directive);
     }
 };
 
