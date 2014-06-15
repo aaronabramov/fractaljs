@@ -54,13 +54,13 @@ make unit
 ```
 
 ##### Features TODO
-- 'require_tree' directive
-- 'require_module' vs. 'require' directives
-- throw error in main thread (main app) on compile error
+- `require ./file.js nowrap` to avoid wraping in module
+- parse directives differently for different file types
+- throw error in main thread (main app) on compile error (coffee/hamlc)
 - production build
 - generate layered build config file automatically (which package cantains required module)
 - ~~compile coffee/hamlc~~
-- disable directives for certain types (hamlc)
+- ~~'require_tree' && 'require_directory' directives~~
 
 
 ##### Building process TODO:
@@ -79,8 +79,9 @@ if file is issued from the client app by http, response should always look like 
 e.g.
 JSON request
 ```
-GET /application.js
-Accept-Type: 'application/json'
+    GET /application.js
+    Accept-Type: 'application/json'
+    _Require-Mode: 'Debug'
 ```
 
 response:
