@@ -1,10 +1,10 @@
 var path = require('path'),
     config = require('./config.js'),
     EXTENSION_TO_FILETYPE_MAP = {
-    'js': 'js',
-    'hamlc': 'hamlc',
-    'coffee': 'coffee'
-};
+        'js': 'js',
+        'hamlc': 'hamlc',
+        'coffee': 'coffee'
+    };
 
 module.exports = {
     extractFileType: function(filePath) {

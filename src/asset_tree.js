@@ -88,7 +88,7 @@ function recurMakeTree(filePath, data, deferred) {
         // itself from bottom to top.
         deferred.resolve(new AssetNode({
             path: filePath,
-            content: data,
+            content: data.toString(),
             children: assetNodes,
             directives: extractedDirectives
         }));
