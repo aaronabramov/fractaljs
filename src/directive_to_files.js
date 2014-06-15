@@ -96,7 +96,7 @@ module.exports = {
     },
     "require_lib": function() {
         var d = Q.defer();
-        d.resolve([]);
+        d.resolve([config.LIB_PATH]);
         return d.promise;
     },
     "require_self": function() {

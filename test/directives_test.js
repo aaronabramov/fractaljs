@@ -39,12 +39,13 @@ describe('directives.js', function() {
         it('returns list of files to require', function(done) {
             try {
                 this.subject.filesToRequire().then(function(list) {
-                    expect(list[0]).to.contain('index.js');
-                    expect(list[1]).to.contain('module1.js');
-                    expect(list[2]).to.contain('tree/file1.js');
-                    expect(list[3]).to.contain('tree/subdir/subdir_file1.hamlc');
-                    expect(list[4]).to.contain('directory/file1.coffee');
-                    expect(list[5]).to.contain('directory/file1.js');
+                    expect(list[0]).to.contain('async_require.js');
+                    expect(list[1]).to.contain('index.js');
+                    expect(list[2]).to.contain('module1.js');
+                    expect(list[3]).to.contain('tree/file1.js');
+                    expect(list[4]).to.contain('tree/subdir/subdir_file1.hamlc');
+                    expect(list[5]).to.contain('directory/file1.coffee');
+                    expect(list[6]).to.contain('directory/file1.js');
                     done();
                 }).fail(function(err) {
                     done(err);

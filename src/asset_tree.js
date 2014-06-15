@@ -3,7 +3,7 @@ var config = require('./config.js'),
     utils = require('./utils.js'),
     fs = require('fs'),
     glob = require('glob'),
-    directives = require('./directives.js'),
+    Directives = require('./directives.js'),
     AssetNode = require('./asset_node.js');
 
 /**
@@ -75,26 +75,32 @@ function getGlob(filePath) {
  * @param deferred {Q.deferred}
  */
 function recurMakeTree(filePath, data, deferred) {
-    var extractedDirectives = directives.extract(data),
-        filesToRequire = directives.extractFilesToRequire(extractedDirectives),
+    var branches,
+        directives = new Directives(filePath, data),
+        filesToRequire = directives.filesToRequire();
+
+    filesToRequire.then(function(list) {
         // Create branch for every sub file
-        branches = filesToRequire.map(function(path) {
+        branches = list.map(function(path) {
             return makeTree(path); // Recur
         });
-
-    Q.all(branches).then(function(assetNodes) {
-        // Recursion base case. when there are no files to require it
-        // resolves itself with `children: []` and tree starts to fill
-        // itself from bottom to top.
-        deferred.resolve(new AssetNode({
-            path: filePath,
-            content: data.toString(),
-            children: assetNodes,
-            directives: extractedDirectives
-        }));
+        Q.all(branches).then(function(assetNodes) {
+            // Recursion base case. when there are no files to require it
+            // resolves itself with `children: []` and tree starts to fill
+            // itself from bottom to top.
+            deferred.resolve(new AssetNode({
+                path: filePath,
+                content: data.toString(),
+                children: assetNodes,
+                directives: directives
+            }));
+        }).fail(function(err) {
+            deferred.reject(err);
+        });
     }).fail(function(err) {
         deferred.reject(err);
     });
+
 }
 
 module.exports.makeTree = makeTree;
