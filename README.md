@@ -47,10 +47,20 @@ exports.f = function () { return 'submodule'; };
 make install && make dev
 ```
 
+### run all tests
+```shell
+make test
+```
+
+### watch mocha test
+```shell
+make watch_test
+```
+
 ### run karma tests
 ```shell
 brew install phantomjs
-make unit
+make karma
 ```
 
 ##### Features TODO
