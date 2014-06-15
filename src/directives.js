@@ -1,9 +1,6 @@
 var config = require('./config.js'),
-    walk = require('walk'),
-    path = require('path'),
-    fs = require('fs'),
     Q = require('q'),
-    walk = require('walk'),
+    directiveToFiles = require('./directive_to_files.js'),
     AVAILABLE_DIRECTIVE_TYPES = [
         'require_self',
         'require_lib',
@@ -19,9 +16,10 @@ function Directives(content) {
 }
 
 Directives.prototype = {
-    filesToRequire: function() {
+    filesToRequire: function(root) {
         var deferred = Q.defer(),
             filesPaths = [];
+        this.list.map(function(directive) {});
     },
     _getDirectivesByType: function(type) {
         return this.list.filter(function(directive) {
@@ -32,59 +30,14 @@ Directives.prototype = {
      * Get files from directory. This is a shallow require. files from
      * subdirectories will not be required
      */
-    _getDirectoryFiles: function(directive) {
-        var deferred = Q.defer(),
-            files = [],
-            directory = directive[1];
-        if (!directory) {
-            throw new Error('require_directory path should be a directory');
-        }
-        directory = path.resolve(config.assetPath, directory);
-        fs.readdir(directory, function(err, filePaths) {
-            var promises = filePaths.map(function(filePath) {
-                var deferred = Q.defer();
-                filePath = path.resolve(config.assetPath, directory, filePath);
-                fs.stat(filePath, function(err, stats) {
-                    if (err) { deferred.reject(err); }
-                    deferred.resolve({path: filePath, isFile: stats.isFile()});
-                });
-                return deferred.promise;
-            });
-            Q.all(promises).then(function(files) {
-                var list = [];
-                files.forEach(function(file) {
-                    if (file.isFile) {
-                        list.push(file.path);
-                    }
-                });
-                deferred.resolve(list);
-            }).fail(function(err) {
-                deferred.reject(err);
-            });
-        });
-        return deferred.promise;
+    _getDirectoryFiles: function(root, directive) {
+        return directiveToFiles.getFiles(root, directive);
     },
     /**
      * Get all files from directory reculsively, including files in subdirectories
      */
-    _getTreeFiles: function(directive) {
-        var deferred = Q.defer(),
-            files = [],
-            directory = directive[1],
-            walker;
-        if (!directory) {
-            throw new Error('require_directory path should be a directory');
-        }
-        directory = path.resolve(config.assetPath, directory);
-        walker = walk.walk(directory);
-        walker.on('file', function(root, fileStats, next) {
-            files.push(root + '/' + fileStats.name);
-            next();
-        });
-        walker.on('end', function() {
-            deferred.resolve(files);
-        });
-        return deferred.promise;
+    _getTreeFiles: function(root, directive) {
+        return directiveToFiles.getFiles(root, directive);
     }
 };
 

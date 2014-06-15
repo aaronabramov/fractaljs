@@ -3,7 +3,7 @@ var assetTree = require('../src/asset_tree.js'),
     path = require('path'),
     expect = require('chai').expect;
 
-describe('asset_tree.js', function() {
+xdescribe('asset_tree.js', function() {
     beforeEach(function() {
         this._assetPath = config.assetPath;
         config.assetPath = path.resolve(__dirname, './fixtures');

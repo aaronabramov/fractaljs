@@ -5,16 +5,16 @@ var Directives = require('../src/directives.js'),
     expect = require('chai').expect;
 
 
-describe.only('directives.js', function() {
+describe('directives.js', function() {
     beforeEach(function(done) {
         var _this = this;
-        fs.readFile(path.resolve(__dirname, './fixtures/directives/directives.js'), function(err, data) {
+        this._assetPath = config.assetPath;
+        config.assetPath = path.resolve(__dirname, './fixtures/directives');
+        this.filePath = path.resolve(__dirname, './fixtures/directives/directives.js');
+        fs.readFile(this.filePath, function(err, data) {
             _this.subject = new Directives(data.toString());
             done();
         });
-
-        this._assetPath = config.assetPath;
-        config.assetPath = path.resolve(__dirname, './fixtures/directives');
     });
 
     afterEach(function() {
@@ -71,34 +71,6 @@ describe.only('directives.js', function() {
             this.subject._getDirectivesByType('require_lib').should.eql([
                 ['require_lib']
             ]);
-        });
-    });
-
-    describe('#_directoryFiles', function() {
-        it('gets list of files in the directory', function(done) {
-            var directive = this.subject._getDirectivesByType('require_directory')[0];
-            this.subject._getDirectoryFiles(directive).then(function(files) {
-                try {
-                    expect(files[0]).to.contain('directory/file1.coffee');
-                    expect(files[1]).to.contain('directory/file1.js');
-                    expect(files.length).to.equal(2);
-                    done();
-                } catch (err) { done(err); }
-            });
-        });
-    });
-
-    describe('#_getTreeFiles', function() {
-        it('gets list of files in the directory including subdirs', function(done) {
-            var directive = this.subject._getDirectivesByType('require_tree')[0];
-            this.subject._getTreeFiles(directive).then(function(files) {
-                try {
-                    expect(files[0]).to.contain('tree/file1.js');
-                    expect(files[1]).to.contain('tree/subdir/subdir_file1.hamlc');
-                    expect(files.length).to.equal(2);
-                    done();
-                } catch (err) { done(err); }
-            });
         });
     });
 });
