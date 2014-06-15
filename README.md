@@ -59,6 +59,8 @@ make unit
 - throw error in main thread (main app) on compile error (coffee/hamlc)
 - production build
 - generate layered build config file automatically (which package cantains required module)
+- heartbeat
+- make module names relative paths
 - ~~compile coffee/hamlc~~
 - ~~'require_tree' && 'require_directory' directives~~
 
