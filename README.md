@@ -64,6 +64,7 @@ make karma
 ```
 
 ##### Features TODO
+- get rid of mutable config (mutability sucks, immutable datastructures rulezz)
 - `require ./file.js nowrap` to avoid wraping in module
 - parse directives differently for different file types
 - throw error in main thread (main app) on compile error (coffee/hamlc)

@@ -1,38 +1,76 @@
 var http = require('http'),
-    argv = require('minimist')(process.argv.slice(2)),
     config = require('./config.js'),
     build = require('./build.js');
 
-function start(config) {
-
-    if (!config.assetPath) throw new Error('path must be present');
-    if (!config.port) throw new Error('port must be present');
-
-    http.createServer(function (req, res) {
-        console.log('requested :::: ' + req.url);
-        var filePath = '.' + req.url,
-            requireMode = req.headers['_require-mode'],
-            promise = build.build(filePath);
-
-        promise.then(function (src) {
-            res.writeHead(200, {'Content-Type': 'application/javascript'});
-            if (requireMode === 'Debug') {
-                src.shift();
-            } else {
-                src.splice(1);
-            }
-            res.end(JSON.stringify(src));
-        }).fail(function (err) {
-            console.log(err)
-            console.log(err && err.stack);
-            res.writeHead(404, {'Content-Type': 'application/javascript'});
-            res.end();
-        });
-    }).listen(config.port);
-
-    console.log('Server is listening on ' + config.port);
-}
-
 module.exports = {
-    start: start
+    DEFAULT_PORT: 6969,
+    REQUIRE_MODE_HEADER: '_require-mode',
+    REQUIRE_MODE_DEBUG_VALUE: 'debug',
+
+    /**
+     * Create instance of {http.Server}
+     *
+     * @return {http.Server}
+     */
+    createServer: function() {
+        var _this = this,
+            server;
+
+        if (!config.assetPath) throw new Error('path must be present');
+
+        server = http.createServer(function(req, res) {
+            _this.log('requested :::: ' + req.url);
+            var filePath = '.' + req.url,
+                requireMode = req.headers[_this.REQUIRE_MODE_HEADER],
+                promise = build.build(filePath);
+
+            promise.then(function(src) {
+                res.writeHead(200, {
+                    'Content-Type': 'application/javascript'
+                });
+                if (requireMode === _this.REQUIRE_MODE_DEBUG_VALUE) {
+                    src.shift();
+                } else {
+                    src.splice(1);
+                }
+                res.end(JSON.stringify(src));
+            }).fail(function(err) {
+                _this.log(err);
+                _this.log(err && err.stack);
+                res.writeHead(404, {
+                    'Content-Type': 'application/javascript'
+                });
+                res.end();
+            });
+        });
+        return server;
+    },
+
+    /**
+     * Start server
+     *
+     * @param {http.Server}
+     */
+    start: function(server) {
+        server.listen(config.port || this.DEFAULT_PORT);
+        this.log('Server is listening on ' + config.port || this.DEFAULT_PORT);
+        return server;
+    },
+    /**
+     * Stop server
+     *
+     * @param {http.Server}
+     */
+    stop: function(server) {
+        server.close();
+        this.log('Server stopped');
+        return server;
+    },
+
+    /**
+     * Proxy to console.log
+     */
+    log: function() {
+        console.log(arguments);
+    }
 };
