@@ -3,12 +3,12 @@ karma:
 	./node_modules/karma/bin/karma start
 
 test:
-	./node_modules/mocha/bin/mocha --reporter spec
+	./node_modules/mocha/bin/mocha --reporter spec --recursive
 	./node_modules/karma/bin/karma start --single-run
 
 
 watch_test:
-	./node_modules/mocha/bin/mocha --watch --reporter spec
+	./node_modules/mocha/bin/mocha --watch --reporter spec --recursive
 
 install:
 	npm install
