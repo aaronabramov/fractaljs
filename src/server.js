@@ -24,21 +24,22 @@ module.exports = {
                 requireMode = req.headers[_this.REQUIRE_MODE_HEADER],
                 promise = build.build(filePath);
 
-            promise.then(function(src) {
+            promise.then(function(list) {
                 res.writeHead(200, {
-                    'Content-Type': 'application/javascript'
+                    'Content-Type': 'application/json'
                 });
-                if (requireMode === _this.REQUIRE_MODE_DEBUG_VALUE) {
-                    src.shift();
-                } else {
-                    src.splice(1);
-                }
-                res.end(JSON.stringify(src));
+                // TODO: Merge source code in one string if not debug mode
+                // if (requireMode === _this.REQUIRE_MODE_DEBUG_VALUE) {
+                //     src.shift();
+                // } else {
+                //     src.splice(1);
+                // }
+                res.end(JSON.stringify(list));
             }).fail(function(err) {
                 _this.log(err);
                 _this.log(err && err.stack);
                 res.writeHead(404, {
-                    'Content-Type': 'application/javascript'
+                    'Content-Type': 'application/json'
                 });
                 res.end();
             });
@@ -53,7 +54,7 @@ module.exports = {
      */
     start: function(server) {
         server.listen(config.port || this.DEFAULT_PORT);
-        this.log('Server is listening on ' + config.port || this.DEFAULT_PORT);
+        this.log('Server is listening on ' + (config.port || this.DEFAULT_PORT));
         return server;
     },
     /**

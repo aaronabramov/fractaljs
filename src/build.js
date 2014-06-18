@@ -7,6 +7,7 @@ function build(filePath) {
     assetTree.makeTree(filePath).then(function(assetNode) {
         var list = makeAssetList(assetNode);
         list.forEach(preprocessors.preprocess);
+        console.log(list);
         deferred.resolve(list.map(function(node) {
             return {
                 path: node.path,

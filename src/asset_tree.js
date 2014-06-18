@@ -51,7 +51,8 @@ function getPath(filePath, deferred) {
  * @return {Q.promise}
  */
 function getGlob(filePath) {
-    var pattern = filePath + '.*';
+    var pattern = filePath + '.*',
+        deferred = Q.defer();
     glob(pattern, {
         cwd: config.assetPath
     }, function(err, files) {
