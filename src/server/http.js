@@ -1,5 +1,5 @@
 var http = require('http'),
-    config = require('./config.js'),
+    config = require('../config.js'),
     router = require('./router.js');
 
 module.exports = {

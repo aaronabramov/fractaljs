@@ -1,7 +1,7 @@
 var http = require('http'),
     path = require('path'),
     config = require('../src/config.js'),
-    server = require('../src/server.js'),
+    // server = require('../src/server.js'),
     expect = require('chai').expect;
 
 xdescribe('headers', function() {

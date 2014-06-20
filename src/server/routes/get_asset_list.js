@@ -1,4 +1,4 @@
-var build = require('../build.js'),
+var build = require('../../build.js'),
     respondError = require('../respond_error.js');
 
 module.exports = function(req, res, path) {

@@ -7,5 +7,4 @@
 //= exclude ./exclude_file.js
 
 (function() {
-    console.log('directives');
 })();
