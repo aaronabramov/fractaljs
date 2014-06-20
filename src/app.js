@@ -1,9 +1,9 @@
 var argv = require('minimist')(process.argv.slice(2)),
     config = require('./config.js'),
-    server = require('./server');
+    httpServer = require('./server/http.js');
 
 config.configPath = argv.config;
 config.assetPath = argv.path;
 config.port = argv.port;
 
-server.start(server.createServer());
+httpServer.start(httpServer.createServer());
