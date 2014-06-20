@@ -1,10 +1,11 @@
-var regexpCache = {};
+var respondError = require('./respond_error.js'),
+    regexpCache = {};
 
 module.exports = {
     routes: {
         '\\/assets\\/(.*)':        require('./routes/get_asset.js'),
-        '\\/getAssetList\\/(.*)':  require('./routes/get_asset_list.js'),
-        '\\/getBuild\\/(.*)':      require('./routes/get_build.js')
+        '\\/get_asset_list\\/(.*)':  require('./routes/get_asset_list.js'),
+        '\\/get_build\\/(.*)':      require('./routes/get_build.js')
     },
     /**
      * looks up the function to execute and returns it with captured
@@ -38,21 +39,8 @@ module.exports = {
     exec: function(path, req, res) {
         var result = this.lookup(path);
         if (!result) {
-            return this.respondNotFound(res, 'route not found: [' + path + ']');
+            return respondError.respondNotFound(res, 'route not found: [' + path + ']');
         }
         return result.fn.apply(this, [req, res].concat(result.args));
-    },
-
-    respondNotFound: function(res, msg) {
-        this.respondError(res, {status: 404, msg: msg});
-    },
-
-    respondError: function(res, err) {
-        res.writeHead(err.status, {
-            'Content-Type': 'application/json'
-        });
-       res.end(JSON.stringify({
-            msg: err.msg
-        }));
     }
 };
