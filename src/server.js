@@ -1,5 +1,6 @@
 var http = require('http'),
     config = require('./config.js'),
+    router = require('./router.js'),
     build = require('./build.js');
 
 module.exports = {
@@ -19,30 +20,31 @@ module.exports = {
         if (!config.assetPath) throw new Error('path must be present');
 
         server = http.createServer(function(req, res) {
-            _this.log('requested :::: ' + req.url);
-            var filePath = '.' + req.url,
-                requireMode = req.headers[_this.REQUIRE_MODE_HEADER],
-                promise = build.build(filePath);
-
-            promise.then(function(list) {
-                res.writeHead(200, {
-                    'Content-Type': 'application/json'
-                });
-                // TODO: Merge source code in one string if not debug mode
-                // if (requireMode === _this.REQUIRE_MODE_DEBUG_VALUE) {
-                //     src.shift();
-                // } else {
-                //     src.splice(1);
-                // }
-                res.end(JSON.stringify(list));
-            }).fail(function(err) {
-                _this.log(err);
-                _this.log(err && err.stack);
-                res.writeHead(404, {
-                    'Content-Type': 'application/json'
-                });
-                res.end();
-            });
+            var filePath = req.url,
+                requireMode = req.headers[_this.REQUIRE_MODE_HEADER];
+            router.exec(filePath, req, res);
+            res.end();
+            //     promise = build.build(filePath);
+            //
+            // promise.then(function(list) {
+            //     res.writeHead(200, {
+            //         'Content-Type': 'application/json'
+            //     });
+            //     // TODO: Merge source code in one string if not debug mode
+            //     // if (requireMode === _this.REQUIRE_MODE_DEBUG_VALUE) {
+            //     //     src.shift();
+            //     // } else {
+            //     //     src.splice(1);
+            //     // }
+            //     res.end(JSON.stringify(list));
+            // }).fail(function(err) {
+            //     _this.log(err);
+            //     _this.log(err && err.stack);
+            //     res.writeHead(404, {
+            //         'Content-Type': 'application/json'
+            //     });
+            //     res.end();
+            // });
         });
         return server;
     },
