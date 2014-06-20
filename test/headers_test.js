@@ -4,7 +4,7 @@ var http = require('http'),
     server = require('../src/server.js'),
     expect = require('chai').expect;
 
-describe('headers', function() {
+xdescribe('headers', function() {
     before(function() {
         this.sandbox.stub(server, 'log');
         this._assetPath = config.assetPath;
