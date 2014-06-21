@@ -24,10 +24,8 @@ describe('directive_to_files.js', function() {
 
     describe('#getFiles', function() {
         it('gets list of files for `require_directory`', function(done) {
-            var directive = this.directives._getDirectivesByType('require_directory')[0],
-                directiveType = directive[0],
-                args = directive.slice(1);
-            directiveToFiles.getFiles(this.filePath, directiveType, args).then(function(files) {
+            var directive = this.directives._getDirectivesByType('require_directory')[0];
+            directiveToFiles.getFiles(this.filePath, directive.type, directive.args).then(function(files) {
                 try {
                     expect(files[0]).to.contain('directory/file1.coffee');
                     expect(files[1]).to.contain('directory/file1.js');
@@ -39,10 +37,8 @@ describe('directive_to_files.js', function() {
     });
 
     it('gets list of files for `require_tree`', function(done) {
-        var directive = this.directives._getDirectivesByType('require_tree')[0],
-            directiveType = directive[0],
-            args = directive.slice(1);
-        directiveToFiles.getFiles(this.filePath, directiveType, args).then(function(files) {
+        var directive = this.directives._getDirectivesByType('require_tree')[0];
+        directiveToFiles.getFiles(this.filePath, directive.type, directive.args).then(function(files) {
             try {
                 expect(files[0]).to.contain('tree/file1.js');
                 expect(files[1]).to.contain('tree/subdir/subdir_file1.hamlc');
