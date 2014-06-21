@@ -1,14 +1,18 @@
 karma:
-	echo 'Running tests...'
-	./node_modules/karma/bin/karma start
+	$(MAKE) arg="--single-run" watch_karma
+
+mocha:
+	./node_modules/mocha/bin/mocha ./test/setup.js ./test/{,**/}*_test.js --reporter spec $(arg)
 
 test:
-	./node_modules/mocha/bin/mocha --reporter spec --recursive
-	./node_modules/karma/bin/karma start --single-run
+	$(MAKE) mocha
+	$(MAKE) karma
 
+watch_mocha:
+	$(MAKE) arg="--watch" mocha
 
-watch_test:
-	./node_modules/mocha/bin/mocha --watch --reporter spec --recursive
+watch_karma:
+	./node_modules/karma/bin/karma start $(arg)
 
 install:
 	npm install
