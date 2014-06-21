@@ -1,3 +1,6 @@
+var fs = require('fs'),
+    Promise = require('es6-promise').Promise;
+
 /**
  * @param options.path {String} asset path
  * @param [options.wrap] {Boolean} whether to wrap file in module
@@ -12,5 +15,24 @@ function AssetNode(options) {
     this.directives = options.directives;
     this.children = options.children || [];
 }
+
+AssetNode.prototype = {
+    /**
+     * readFile `this.path` and resolve promise with it's content
+     * @return {Promise}
+     */
+    fetchContent: function() {
+        var _this = this;
+        return new Promise(function(resolve, reject) {
+            fs.readFile(_this.path, function(err, content) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    resolve(content.toString());
+                }
+            });
+        });
+    }
+};
 
 module.exports = AssetNode;
