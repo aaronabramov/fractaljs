@@ -6,7 +6,7 @@ module.exports = function(req, res, path) {
         res.writeHead(200, {
             'Content-Type': 'application/javascript'
         });
-        res.end(JSON.stringify(assetNode.content));
+        res.end(assetNode.content);
     }).catch(function(err) {
         respondError.respondError(res, {msg: JSON.stringify(err)});
     });
