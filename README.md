@@ -64,6 +64,7 @@ make karma
 ```
 
 ##### Features TODO
+- Q => ES-6 Promises
 - get rid of mutable config
 - `require ./file.js nowrap` to avoid wraping in module
 - parse directives differently for different file types

@@ -23,15 +23,7 @@ describe('directives.js', function() {
 
     describe('constructor', function() {
         it('parses directives', function() {
-            expect(this.subject.list).to.eql([
-                ['require_lib'],
-                ['require', './index.js'],
-                ['require_self'],
-                ['require', './module1.js', 'nowrap'],
-                ['require_tree', './tree'],
-                ['require_directory', './directory'],
-                ['exclude', './exclude_file.js']
-            ]);
+            expect(this.subject.directives.length).to.equal(7);
         });
     });
 
@@ -39,13 +31,13 @@ describe('directives.js', function() {
         it('returns list of files to require', function(done) {
             try {
                 this.subject.filesToRequire().then(function(list) {
-                    expect(list[0]).to.contain('async_require.js');
-                    expect(list[1]).to.contain('index.js');
-                    expect(list[2]).to.contain('module1.js');
-                    expect(list[3]).to.contain('tree/file1.js');
-                    expect(list[4]).to.contain('tree/subdir/subdir_file1.hamlc');
-                    expect(list[5]).to.contain('directory/file1.coffee');
-                    expect(list[6]).to.contain('directory/file1.js');
+                    expect(list[0].path).to.contain('async_require.js');
+                    expect(list[1].path).to.contain('index.js');
+                    expect(list[2].path).to.contain('module1.js');
+                    expect(list[3].path).to.contain('tree/file1.js');
+                    expect(list[4].path).to.contain('tree/subdir/subdir_file1.hamlc');
+                    expect(list[5].path).to.contain('directory/file1.coffee');
+                    expect(list[6].path).to.contain('directory/file1.js');
                     done();
                 }).fail(function(err) {
                     done(err);
@@ -58,40 +50,39 @@ describe('directives.js', function() {
 
     describe('#_getDirectivesByType', function() {
         it('returns directives of `require` type', function() {
-            this.subject._getDirectivesByType('require').should.eql([
-                ['require', './index.js'],
-                ['require', './module1.js', 'nowrap'],
-            ]);
+            this.subject._getDirectivesByType('require').forEach(function(d) {
+                expect(d.type).to.equal('require');
+            });
         });
 
         it('returns directives of `require_tree` type', function() {
-            this.subject._getDirectivesByType('require_tree').should.eql([
-                ['require_tree', './tree']
-            ]);
+            this.subject._getDirectivesByType('require_tree').forEach(function(d) {
+                expect(d.type).to.equal('require_tree');
+            });
         });
 
         it('returns directives of `require_directory` type', function() {
-            this.subject._getDirectivesByType('require_directory').should.eql([
-                ['require_directory', './directory']
-            ]);
+            this.subject._getDirectivesByType('require_directory').forEach(function(d) {
+                expect(d.type).to.equal('require_directory');
+            });
         });
 
         it('returns directives of `exclude` type', function() {
-            this.subject._getDirectivesByType('exclude').should.eql([
-                ['exclude', './exclude_file.js']
-            ]);
+            this.subject._getDirectivesByType('exclude').forEach(function(d) {
+                expect(d.type).to.equal('exclude');
+            });
         });
 
         it('returns directives of `require_self` type', function() {
-            this.subject._getDirectivesByType('require_self').should.eql([
-                ['require_self']
-            ]);
+            this.subject._getDirectivesByType('require_self').forEach(function(d) {
+                expect(d.type).to.equal('require_self');
+            });
         });
 
         it('returns directives of `require_lib` type', function() {
-            this.subject._getDirectivesByType('require_lib').should.eql([
-                ['require_lib']
-            ]);
+            this.subject._getDirectivesByType('require_lib').forEach(function(d) {
+                expect(d.type).to.equal('require_lib');
+            });
         });
     });
 });

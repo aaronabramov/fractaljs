@@ -1,4 +1,8 @@
+/**
+ * module is a container for multiple {Directive}s
+ */
 var config = require('./config.js'),
+    Directive = require('./directive.js'),
     Q = require('q'),
     directiveToFiles = require('./directive_to_files.js'),
     AVAILABLE_DIRECTIVE_TYPES = [
@@ -13,7 +17,7 @@ var config = require('./config.js'),
 
 function Directives(path, content) {
     this.path = path;
-    this.list = extract(content);
+    this.directives = this._extract(content);
 }
 
 Directives.prototype = {
@@ -24,8 +28,8 @@ Directives.prototype = {
         var _this = this,
             deferred = Q.defer(),
             filesPaths = [],
-            promises = this.list.map(function(directive) {
-                return directiveToFiles.getFiles(_this.path, directive);
+            promises = this.directives.map(function(directive) {
+                return directive.filesToRequire();
             });
         Q.all(promises).then(function(fileLists) {
             var files = [];
@@ -38,26 +42,30 @@ Directives.prototype = {
         });
         return deferred.promise;
     },
+    /**
+     * @param type {String}
+     * return directives of given type
+     */
     _getDirectivesByType: function(type) {
-        return this.list.filter(function(directive) {
-            return directive[0] === type;
+        return this.directives.filter(function(directive) {
+            return directive.type === type;
         });
+    },
+    /**
+     * @return {Array} array of {Directive}
+     */
+    _extract: function(content) {
+        var match, fileNames = [], _this = this;
+        while (match = DIRECTIVE_PATTERN.exec(content)) {
+            var directive = match[1],
+                args = match[2],
+                result = [directive];
+            args && (result = result.concat(args.trim().split(/\s+/)));
+            result = new Directive(_this.path, result);
+            fileNames.push(result);
+        }
+        return fileNames;
     }
 };
-
-/**
- * @return {Array} array of directives and their values
- */
-function extract(content) {
-    var match, fileNames = [];
-    while (match = DIRECTIVE_PATTERN.exec(content)) {
-        var directive = match[1],
-            args = match[2],
-            result = [directive];
-        args && (result = result.concat(args.trim().split(/\s+/)));
-        fileNames.push(result);
-    }
-    return fileNames;
-}
 
 module.exports = Directives;

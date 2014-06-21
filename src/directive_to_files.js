@@ -18,19 +18,20 @@ var config = require('./config.js'),
 module.exports = {
     /**
      * @param root {String} path of the file that contains directive
+     * @param directiveType {String} (require_tree, require_directory...)
+     * @param args {Array} ['./tree', 'wrap_in_module']
      * @return {Q.promise} resolves with file list
      */
-    getFiles: function(root, directive) {
-        var directiveType = directive[0];
-        return this[directiveType](root, directive);
+    getFiles: function(root, directiveType, args) {
+        return this[directiveType](root, args);
     },
-    "require_tree": function(root, directive) {
+    "require_tree": function(root, args) {
         if (!root) {
             throw new Error('root is required');
         }
         var deferred = Q.defer(),
             files = [],
-            directory = directive[1],
+            directory = args[0],
             walker;
         if (!directory) {
             throw new Error('require_directory path should be a directory');
@@ -46,13 +47,13 @@ module.exports = {
         });
         return deferred.promise;
     },
-    "require_directory": function(root, directive) {
+    "require_directory": function(root, args) {
         if (!root) {
             throw new Error('root is required');
         }
         var deferred = Q.defer(),
             files = [],
-            directory = directive[1];
+            directory = args[0];
         if (!directory) {
             throw new Error('require_directory path should be a directory');
         }
@@ -89,9 +90,9 @@ module.exports = {
         });
         return deferred.promise;
     },
-    "require": function(root, directive) {
+    "require": function(root, args) {
         var deferred = Q.defer();
-        deferred.resolve([directive[1]]);
+        deferred.resolve([args[0]]);
         return deferred.promise;
     },
     "require_lib": function() {
