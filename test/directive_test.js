@@ -8,22 +8,24 @@ describe('directive.js', function() {
     });
 
     describe('#filesToRequire', function() {
-        it('returns the list with {wrap: true} set', function(done) {
+        it('returns assetNodes with {wrap: true} set', function(done) {
             var directive = new Directive(this.path, [
                 'require', './file1.js', 'wrap_in_module'
             ]);
             directive.filesToRequire().then(function(list) {
-                expect(list).to.eql([{path: './file1.js', wrap: true}]);
+                expect(list[0].path).to.equal('./file1.js')
+                expect(list[0].wrap).to.be.ok;
                 done();
             }).catch(done);
         });
 
-        it('returns the list with', function(done) {
+        it('returns the assetNodes', function(done) {
             var directive = new Directive(this.path, [
                 'require', './file2.hamlc'
             ]);
             directive.filesToRequire().then(function(list) {
-                expect(list).to.eql([{path: './file2.hamlc'}]);
+                expect(list[0].path).to.eql('./file2.hamlc');
+                expect(list[0].wrap).to.not.be.ok;
                 done();
             }).catch(done);
         });

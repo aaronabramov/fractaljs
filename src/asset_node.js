@@ -1,4 +1,6 @@
 var fs = require('fs'),
+    config = require('./config.js'),
+    path = require('path'),
     Promise = require('es6-promise').Promise;
 
 /**
@@ -17,6 +19,12 @@ function AssetNode(options) {
 }
 
 AssetNode.prototype = {
+    /**
+     * Modifies file path resolving it
+     */
+    resolvePath: function() {
+        this.path = path.resolve(config.assetPath, this.path);
+    },
     /**
      * readFile `this.path` and resolve promise with it's content
      * @return {Promise}

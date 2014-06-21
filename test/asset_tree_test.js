@@ -1,4 +1,5 @@
 var assetTree = require('../src/asset_tree.js'),
+    AssetNode = require('../src/asset_node.js'),
     config = require('../src/config.js'),
     path = require('path'),
     expect = require('chai').expect;
@@ -15,8 +16,9 @@ describe('asset_tree.js', function() {
 
     describe('#makeTree', function() {
         it('requires submodules', function(done) {
+            var assetNode = new AssetNode({path: './module1.js'});
             try {
-                assetTree.makeTree({path: './module1.js'}).then(function(assetNode) {
+                assetTree.makeTree(assetNode).then(function(assetNode) {
                     expect(config.LIB_PATH).to.be.a('string');
                     expect(assetNode.children.length).to.equal(3);
                     expect(assetNode.children[0].path).to.equal(config.LIB_PATH);

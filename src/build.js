@@ -1,12 +1,14 @@
 var assetTree = require('./asset_tree.js'),
+    AssetNode = require('./asset_node.js'),
     preprocessors = require('./preprocessors.js'),
     path = require('path'),
     config = require('./config.js'),
     Q = require('q');
 
 function build(filePath) {
-    var deferred = Q.defer();
-    assetTree.makeTree({path: filePath}).then(function(assetNode) {
+    var deferred = Q.defer(),
+        assetNode = new AssetNode({path: filePath});
+    assetTree.makeTree(assetNode).then(function(assetNode) {
         var list = makeAssetList(assetNode);
         list.forEach(preprocessors.preprocess);
         deferred.resolve(list.map(function(node) {

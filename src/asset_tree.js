@@ -9,16 +9,16 @@ var config = require('./config.js'),
 /**
  * Walk through file system recursively and construct asset tree
  * from bottom to the top.
- * @param file {Object} {path: './path.js'[, wrap: [true,false]]}
+ * @param assetNode {AssetNode} only with path specified which is absolute
  * @return {Q.promise} resolves with {AssetNode} as an argument. @see #recurMakeTree
  */
-function makeTree(file) {
-    file.path = utils.resolveAssetPath(file.path);
+function makeTree(assetNode) {
+    assetNode.resolvePath();
     // if path has extension, look for exact match, if not then try to match glob
-    if (utils.extractFileType(file.path)) {
-        return getPath(file);
+    if (utils.extractFileType(assetNode.path)) {
+        return getPath(assetNode);
     } else {
-        return getGlob(file);
+        return getGlob(assetNode);
     }
 }
 
@@ -26,20 +26,16 @@ function makeTree(file) {
  * Reads the file with given path. when finished, pass {Q.deferred}
  * into #recurMakeTree along with all the file data
  *
- * @param file {Object} {path: './path.js'[, wrap: [true,false]]}
+ * @param assetNode {assetNode}
  * @param [deferred] {Q.deferred} optional default to Q.defer()
  * @return {Q.promise}
  */
-function getPath(file, deferred) {
+function getPath(assetNode, deferred) {
     deferred = (deferred || Q.defer());
-    fs.readFile(file.path, function(err, content) {
-        if (err) {
-            deferred.reject(err);
-        } else {
-            file.content = content.toString();
-            recurMakeTree(file, deferred);
-        }
-    });
+    assetNode.fetchContent().then(function(content) {
+        assetNode.content = content;
+        recurMakeTree(assetNode, deferred);
+    }).catch(function(e) { deferred.reject(e); });
     return deferred.promise;
 }
 
@@ -48,11 +44,11 @@ function getPath(file, deferred) {
  * match it to any files in file system by globe and then call #getPath
  * with first matching name.
  *
- * @param file {Object} {path: './path.js'[, wrap: [true,false]]}
+ * @param assetNode {AssetNode}
  * @return {Q.promise}
  */
-function getGlob(file) {
-    var pattern = file.path + '.*',
+function getGlob(assetNode) {
+    var pattern = assetNode.path + '.*',
         deferred = Q.defer();
     glob(pattern, {
         cwd: config.assetPath
@@ -61,8 +57,8 @@ function getGlob(file) {
         if (!files.length) {
             return deferred.reject('no files found. path: ' + pattern);
         }
-        file.path = files[0];
-        getPath(file, deferred);
+        assetNode.path = files[0];
+        getPath(assetNode, deferred);
     });
     return deferred.promise;
 }
@@ -73,30 +69,25 @@ function getGlob(file) {
  * when all of required files are resolved, construct {AssetNode} with given
  * file content, append children nodes and resolve given promise.
  *
- * @param file {Object} {path: './path.js'[, wrap: [true,false], content: '']}
+ * @param assetNode {AssetNode}
  * @param deferred {Q.deferred}
  */
-function recurMakeTree(file, deferred) {
-    var branches,
-        directives = new Directives(file),
-        filesToRequire = directives.filesToRequire();
+function recurMakeTree(assetNode, deferred) {
+    var branches, filesToRequire;
+    assetNode.directives = new Directives(assetNode);
+    filesToRequire = assetNode.directives.filesToRequire();
 
     filesToRequire.then(function(list) {
         // Create branch for every sub file
-        branches = list.map(function(file) {
-            return makeTree(file); // Recur
+        branches = list.map(function(subNode) {
+            return makeTree(subNode); // Recur
         });
         Q.all(branches).then(function(assetNodes) {
             // Recursion base case. when there are no files to require it
             // resolves itself with `children: []` and tree starts to fill
             // itself from bottom to top.
-            deferred.resolve(new AssetNode({
-                path: file.path,
-                wrap: file.wrap,
-                content: file.content.toString(),
-                children: assetNodes,
-                directives: directives
-            }));
+            assetNode.children = assetNodes;
+            deferred.resolve(assetNode);
         }).fail(function(err) {
             deferred.reject(err);
         });

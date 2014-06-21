@@ -1,3 +1,5 @@
+var AssetNode = require('./asset_node.js');
+
 /**
  * Module represents one directive. e.g.
  * ['require', './path/to/file.js', 'wrap_in_module']
@@ -15,15 +17,14 @@ function Directive(path, directive) {
     this.path = path;
     this.type = directive[0];
     this.args = directive.slice(1);
-    this._processRequiredFiles = this._processRequiredFiles.bind(this);
+    this._makeAssetNode = this._makeAssetNode.bind(this);
 }
 
 Directive.prototype = {
     WRAP_IN_MODULE_ARG: 'wrap_in_module',
 
     /**
-     * @return {Promise} resolves with list of files
-     * {path: './path/to/file.js', wrap: [true,false]}
+     * @return {Promise} resolves with list {AssetNode}s
      */
     filesToRequire: function() {
         var _this = this;
@@ -31,20 +32,20 @@ Directive.prototype = {
             directiveToFiles.getFiles(
                 _this.path, _this.type, _this.args
             ).then(function(files) {
-                resolve(files.map(_this._processRequiredFiles));
+                resolve(files.map(_this._makeAssetNode));
             }).catch(reject);
         });
     },
     /**
-     * process and modify exctacted file list before returning it
+     * {AssetNode} factory
      * @param filePath {String}
+     * @return {AssetNode}
      */
-    _processRequiredFiles: function(filePath) {
-        var result = {path: filePath};
-        if (this._isWrappedInModule()) {
-            result.wrap = true;
-        }
-        return result;
+    _makeAssetNode: function(filePath) {
+        return new AssetNode({
+            path: filePath,
+            wrap: this._isWrappedInModule()
+        });
     },
     /**
      * @return {Boolean} if files required by this directive need
