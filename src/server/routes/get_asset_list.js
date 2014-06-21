@@ -5,6 +5,12 @@ module.exports = function(req, res, path) {
     promise = build.build(path);
 
     promise.then(function(list) {
+        list = list.map(function(file) {
+            return {
+                path: file.path,
+                wrap: file.wrap
+            };
+        });
         res.writeHead(200, {
             'Content-Type': 'application/json'
         });

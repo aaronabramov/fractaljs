@@ -6,13 +6,14 @@ var assetTree = require('./asset_tree.js'),
 
 function build(filePath) {
     var deferred = Q.defer();
-    assetTree.makeTree(filePath).then(function(assetNode) {
+    assetTree.makeTree({path: filePath}).then(function(assetNode) {
         var list = makeAssetList(assetNode);
         list.forEach(preprocessors.preprocess);
         deferred.resolve(list.map(function(node) {
             return {
                 path: path.relative(config.assetPath, node.path),
-                content: node.content
+                content: node.content,
+                wrap: node.wrap
             };
         }));
     }).fail(function(err) {

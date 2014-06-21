@@ -3,8 +3,8 @@ var respondError = require('./respond_error.js'),
 
 module.exports = {
     routes: {
-        '\\/assets\\/(.*)':        require('./routes/get_asset.js'),
-        '\\/get_asset_list\\/(.*)':  require('./routes/get_asset_list.js'),
+        '\\/assets\\/(.*)':         require('./routes/get_asset.js'),
+        '\\/get_asset_list\\/(.*)': require('./routes/get_asset_list.js'),
         '\\/get_build\\/(.*)':      require('./routes/get_build.js')
     },
     /**

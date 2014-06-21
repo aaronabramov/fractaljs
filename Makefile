@@ -2,7 +2,7 @@ karma:
 	$(MAKE) arg="--single-run" watch_karma
 
 mocha:
-	./node_modules/mocha/bin/mocha ./test/setup.js ./test/{,**/}*_test.js --reporter spec $(arg)
+	./node_modules/mocha/bin/mocha ./test/setup.js ./test/{,**/,**/**/}*_test.js --reporter spec $(arg)
 
 test:
 	$(MAKE) mocha
