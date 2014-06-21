@@ -13,7 +13,10 @@ describe('directive_to_files.js', function() {
         config.assetPath = path.resolve(__dirname, './fixtures/directives');
         this.filePath = path.resolve(__dirname, './fixtures/directives/directives.js');
         fs.readFile(this.filePath, function(err, data) {
-            _this.directives = new Directives(this.filePath, data.toString());
+            _this.directives = new Directives({
+                path: this.filePath,
+                content: data.toString()
+            });
             done();
         });
     });
@@ -31,8 +34,12 @@ describe('directive_to_files.js', function() {
                     expect(files[1]).to.contain('directory/file1.js');
                     expect(files.length).to.equal(2);
                     done();
-                } catch (err) { done(err); }
-            }).fail(function(err) { done(err); });
+                } catch (err) {
+                    done(err);
+                }
+            }).fail(function(err) {
+                done(err);
+            });
         });
     });
 
@@ -44,8 +51,9 @@ describe('directive_to_files.js', function() {
                 expect(files[1]).to.contain('tree/subdir/subdir_file1.hamlc');
                 expect(files.length).to.equal(2);
                 done();
-            } catch (err) { done(err); }
+            } catch (err) {
+                done(err);
+            }
         });
     });
 });
-

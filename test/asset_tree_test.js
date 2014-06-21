@@ -16,11 +16,12 @@ describe('asset_tree.js', function() {
     describe('#makeTree', function() {
         it('requires submodules', function(done) {
             try {
-                assetTree.makeTree('./module1.js').then(function(assetNode) {
+                assetTree.makeTree({path: './module1.js'}).then(function(assetNode) {
                     expect(config.LIB_PATH).to.be.a('string');
-                    expect(assetNode.children.length).to.equal(2);
+                    expect(assetNode.children.length).to.equal(3);
                     expect(assetNode.children[0].path).to.equal(config.LIB_PATH);
-                    expect(assetNode.children[1].path).to.equal(path.resolve(config.assetPath, './module2.js'));
+                    expect(assetNode.children[1].path).to.equal(path.resolve(config.assetPath, './file1.js'));
+                    expect(assetNode.children[2].wrap).to.be.true;
                     done();
                 }).fail(function(err) {
                     done(err);

@@ -12,7 +12,10 @@ describe('directives.js', function() {
         config.assetPath = path.resolve(__dirname, './fixtures/directives');
         this.filePath = path.resolve(__dirname, './fixtures/directives/directives.js');
         fs.readFile(this.filePath, function(err, data) {
-            _this.subject = new Directives(_this.filePath, data.toString());
+            _this.subject = new Directives({
+                path: _this.filePath,
+                content: data.toString()
+            });
             done();
         });
     });

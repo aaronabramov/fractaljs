@@ -17,7 +17,7 @@ var utils = require('./utils.js'),
  */
 function preprocess(assetNode) {
     compile(assetNode);
-    wrap(assetNode);
+    assetNode.wrap && wrap(assetNode);
     return assetNode;
 }
 

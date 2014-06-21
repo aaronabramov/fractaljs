@@ -15,9 +15,12 @@ var config = require('./config.js'),
     ],
     DIRECTIVE_PATTERN = new RegExp("\\/\\/\\s*=\\s*(" + AVAILABLE_DIRECTIVE_TYPES.join('|') + ")(.*)$", "gm");
 
-function Directives(path, content) {
-    this.path = path;
-    this.directives = this._extract(content);
+/**
+ * @param file {Object} {path: '', content: ''...}
+ */
+function Directives(file) {
+    this.path = file.path;
+    this.directives = this._extract(file.content);
 }
 
 Directives.prototype = {
