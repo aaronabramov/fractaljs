@@ -13,7 +13,6 @@ var config = require('./config.js'),
  * @return {Q.promise} resolves with {AssetNode} as an argument. @see #recurMakeTree
  */
 function makeTree(assetNode) {
-    assetNode.resolvePath();
     // if path has extension, look for exact match, if not then try to match glob
     if (utils.extractFileType(assetNode.path)) {
         return getPath(assetNode);

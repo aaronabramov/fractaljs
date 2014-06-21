@@ -21,4 +21,14 @@ describe('build.js', function() {
             }).catch(done);
         });
     });
+
+    describe('#makeSingleNode', function() {
+        it('makes and compiles single node', function(done) {
+            build.makeSingleNode('./module1.hamlc').then(function(assetNode) {
+                expect(assetNode.relativePath()).to.equal('module1.hamlc');
+                expect(assetNode.content).to.contain('</h1>');
+                done();
+            }).catch(done);
+        });
+    });
 });

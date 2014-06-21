@@ -25,19 +25,9 @@ function build(filePath) {
     return deferred.promise;
 }
 
-/**
- * Gets list of assets for generating list of script tags on
- * client side
- */
-function getAssetList(filePath) {
-    return new Promise(function(resolve, reject) {
-        makeNodeList(filePath).then(function(list) {
-            resolve(list);
-        }).catch(reject);
-    });
-}
 
 /**
+ * Gets flat list of {AssetNode}s
  * @param filePath {String}
  * @return {Promise} resolved with flattened asset tree
  */
@@ -47,6 +37,26 @@ function makeNodeList(filePath) {
         assetTree.makeTree(assetNode).then(function(assetNode) {
             resolve(_flattenAssetTree(assetNode));
         }).fail(reject);
+    });
+}
+
+/**
+ * Fetch and compile single asset
+ *
+ * @param filePath {String}
+ * @param wrap {Boolean} whether to wrap asset in module
+ */
+function makeSingleNode(filePath, wrap) {
+    return new Promise(function(resolve, reject) {
+        var assetNode = new AssetNode({
+            path: filePath,
+            wrap: wrap
+        });
+        assetNode.fetchContent().then(function(content) {
+            assetNode.content = content;
+            preprocessors.preprocess(assetNode);
+            resolve(assetNode);
+        }).catch(reject);
     });
 }
 
@@ -69,3 +79,4 @@ function _flattenAssetTree(assetNode, _list) {
 }
 
 module.exports.makeNodeList = makeNodeList;
+module.exports.makeSingleNode = makeSingleNode;

@@ -11,7 +11,7 @@ var fs = require('fs'),
  */
 function AssetNode(options) {
     if (!options.path) { throw new Error('path is required'); }
-    this.path = options.path;
+    this.path = path.resolve(config.assetPath, options.path);
     this.content = options.content;
     this.wrap = options.wrap;
     this.directives = options.directives;
@@ -19,12 +19,6 @@ function AssetNode(options) {
 }
 
 AssetNode.prototype = {
-    /**
-     * Modifies file path resolving it
-     */
-    resolvePath: function() {
-        this.path = path.resolve(config.assetPath, this.path);
-    },
     relativePath: function() {
         return path.relative(config.assetPath, this.path);
     },
@@ -37,7 +31,7 @@ AssetNode.prototype = {
         return new Promise(function(resolve, reject) {
             fs.readFile(_this.path, function(err, content) {
                 if (err) {
-                    deferred.reject(err);
+                    reject(err);
                 } else {
                     resolve(content.toString());
                 }
