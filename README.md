@@ -54,7 +54,7 @@ make test
 
 ### watch mocha test
 ```shell
-make watch_test
+make watch_mocha
 ```
 
 ### run karma tests
