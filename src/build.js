@@ -3,6 +3,7 @@ var assetTree = require('./asset_tree.js'),
     preprocessors = require('./preprocessors.js'),
     path = require('path'),
     config = require('./config.js'),
+    Promise = require('es6-promise').Promise,
     Q = require('q');
 
 function build(filePath) {
@@ -25,22 +26,46 @@ function build(filePath) {
 }
 
 /**
+ * Gets list of assets for generating list of script tags on
+ * client side
+ */
+function getAssetList(filePath) {
+    return new Promise(function(resolve, reject) {
+        makeNodeList(filePath).then(function(list) {
+            resolve(list);
+        }).catch(reject);
+    });
+}
+
+/**
+ * @param filePath {String}
+ * @return {Promise} resolved with flattened asset tree
+ */
+function makeNodeList(filePath) {
+    var assetNode = new AssetNode({path: filePath});
+    return new Promise(function(resolve, reject) {
+        assetTree.makeTree(assetNode).then(function(assetNode) {
+            resolve(_flattenAssetTree(assetNode));
+        }).fail(reject);
+    });
+}
+
+/**
  * Flatten the node structure.
  * TODO: done this way because in future there will be directives like `exclude ./file/path.js`
  * and first, we'll need complete tree with files, their directives and content, and then
  * we'll cut off excluded branches.
  *
- * @param assetNode {AssetNode} root node with subnodes returned by
- * assetTree#makeTree()
- * @return {Array} of {AssetNode} objects
+ * @param assetNode {AssetNode}
+ * @param [_list] {Array} recursivelly pass and modify
  */
-function makeAssetList(assetNode, list) {
-    list = (list || []);
-    list.push(assetNode);
+function _flattenAssetTree(assetNode, _list) {
+    _list = (_list || []);
+    _list.push(assetNode);
     assetNode.children.forEach(function(child) {
-        makeAssetList(child, list);
+        _flattenAssetTree(child, _list);
     });
-    return list;
+    return _list;
 }
 
-module.exports.build = build;
+module.exports.makeNodeList = makeNodeList;

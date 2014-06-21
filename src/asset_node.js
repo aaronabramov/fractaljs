@@ -25,6 +25,9 @@ AssetNode.prototype = {
     resolvePath: function() {
         this.path = path.resolve(config.assetPath, this.path);
     },
+    relativePath: function() {
+        return path.relative(config.assetPath, this.path);
+    },
     /**
      * readFile `this.path` and resolve promise with it's content
      * @return {Promise}
