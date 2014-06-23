@@ -6,25 +6,6 @@ var assetTree = require('./asset_tree.js'),
     Promise = require('es6-promise').Promise,
     Q = require('q');
 
-function build(filePath) {
-    var deferred = Q.defer(),
-        assetNode = new AssetNode({path: filePath});
-    assetTree.makeTree(assetNode).then(function(assetNode) {
-        var list = makeAssetList(assetNode);
-        list.forEach(preprocessors.preprocess);
-        deferred.resolve(list.map(function(node) {
-            return {
-                path: path.relative(config.assetPath, node.path),
-                content: node.content,
-                wrap: node.wrap
-            };
-        }));
-    }).fail(function(err) {
-        deferred.reject(err);
-    });
-    return deferred.promise;
-}
-
 
 /**
  * Gets flat list of {AssetNode}s
