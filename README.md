@@ -65,6 +65,7 @@ make karma
 
 ##### Features TODO
 - Q => ES-6 Promises
+- unified API for serving assets
 - multiple paths
 - get rid of mutable config
 - parse directives differently for different file types
