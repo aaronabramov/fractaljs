@@ -11,7 +11,8 @@ var fs = require('fs'),
  */
 function AssetNode(options) {
     if (!options.path) { throw new Error('path is required'); }
-    this.path = path.resolve(config.assetPath, options.path);
+    this.path = options.path;
+    // this.path = path.resolve(config.assetPath, options.path);
     this.content = options.content;
     this.wrap = options.wrap;
     this.directives = options.directives;

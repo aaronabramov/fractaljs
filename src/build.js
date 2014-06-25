@@ -47,6 +47,7 @@ function makeNodeList(filePath) {
  * @param wrap {Boolean} whether to wrap asset in module
  */
 function makeSingleNode(filePath, wrap) {
+    // console.log(filePath, wrap);
     return new Promise(function(resolve, reject) {
         var assetNode = new AssetNode({
             path: filePath,

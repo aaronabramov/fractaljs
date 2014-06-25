@@ -39,7 +39,8 @@ module.exports = {
         directory = path.resolve(path.dirname(root), directory);
         walker = walk.walk(directory);
         walker.on('file', function(root, fileStats, next) {
-            files.push(root + '/' + fileStats.name);
+            var fileName = path.resolve(config.assetPath, root + '/' + fileStats.name);
+            files.push(fileName);
             next();
         });
         walker.on('end', function() {
@@ -92,7 +93,9 @@ module.exports = {
     },
     "require": function(root, args) {
         var deferred = Q.defer();
-        deferred.resolve([args[0]]);
+
+        var fileName = path.resolve(config.assetPath, args[0]);
+        deferred.resolve([fileName]);
         return deferred.promise;
     },
     "require_lib": function() {
