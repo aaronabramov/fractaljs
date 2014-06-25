@@ -5,7 +5,6 @@ var build = require('./build.js'),
 
 module.exports = {
     getAsset: function(filePath, wrap) {
-        console.log(filePath, wrap);
         filePath = path.resolve(config.assetPath, filePath);
         return new Promise(function(resolve, reject) {
             build.makeSingleNode(filePath, wrap).then(function(assetNode) {
