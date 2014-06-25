@@ -65,13 +65,15 @@ make karma
 
 ##### Features TODO
 - Q => ES-6 Promises
+- unified API for serving assets
+- multiple paths
 - get rid of mutable config
-- `require ./file.js nowrap` to avoid wraping in module
 - parse directives differently for different file types
-- ~~throw error in main thread (main app) on compile error (coffee/hamlc)~~
 - production build
 - generate layered build config file automatically (which package cantains required module)
 - heartbeat
+- ~~throw error in main thread (main app) on compile error (coffee/hamlc)~~
+- ~~`require ./file.js wrap_in_module`~~
 - ~~make module names relative paths~~
 - ~~compile coffee/hamlc~~
 - ~~'require_tree' && 'require_directory' directives~~
