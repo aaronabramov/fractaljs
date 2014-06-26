@@ -77,3 +77,18 @@ make karma
 - ~~make module names relative paths~~
 - ~~compile coffee/hamlc~~
 - ~~'require_tree' && 'require_directory' directives~~
+
+##### API
+
+1. getAssetList(paths, filePath)
+    @param paths {Array} of absolute directory paths for lookup
+    @param filePath {String} relative path to a single js file
+
+2. getASset(paths, filePath, preprocessors)
+    @param paths {Array} of absolute directory paths for lookup
+    @param filePath {String} relative path to a single js file
+    @param [preprocessors] {Object} hash-map of preprocessor name as
+        keys and booleans as values for enabling/disabling preprocessors
+
+3. getBuild()
+    TODO

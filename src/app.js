@@ -4,6 +4,7 @@ var argv = require('minimist')(process.argv.slice(2)),
 
 config.configPath = argv.config;
 config.assetPath = argv.path;
+console.log(argv.path);
 config.port = argv.port;
 
 httpServer.start(httpServer.createServer());
