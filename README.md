@@ -49,13 +49,13 @@ make karma
 
 ##### Features TODO
 - Q => ES-6 Promises
-- unified API for serving assets
 - multiple paths
 - get rid of mutable config
 - parse directives differently for different file types
 - production build
 - generate layered build config file automatically (which package cantains required module)
 - heartbeat
+- ~~unified API for serving assets~~
 - ~~throw error in main thread (main app) on compile error (coffee/hamlc)~~
 - ~~`require ./file.js wrap_in_module`~~
 - ~~make module names relative paths~~
