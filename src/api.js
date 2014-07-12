@@ -26,10 +26,33 @@ module.exports = {
             }).catch(reject);
         });
     },
-    getBuild: function(path) {
-        'stub';
+    bundle: function(filePath) {
+        filePath = path.resolve(config.assetPath, filePath);
+        return build.makeBundle(filePath);
     },
     config: function() {
         return config;
+    },
+    /**
+     * @param {Array} filePaths list of file paths to include in build.
+     * every file will generate it's dependency tree and modules list.
+     * resulting value will be map of modules and corresponding bundle names
+     * @example
+     *  {
+     *      "module1": "bundle1.js",
+     *      "module2": "bundle1.js",
+     *      "module3": "bundle2.js"
+     *  }
+     */
+    manifest: function(filePaths) {
+        var _this = this,
+            promises = filePaths.map(function(filePath) {
+            return _this.getAssetList(filePath);
+        });
+        return new Promise(function(resolve, reject) {
+            Promise.all(promises).then(function() {
+                resolve(arguments);
+            }).catch(reject);
+        });
     }
 };

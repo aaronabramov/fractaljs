@@ -13,7 +13,9 @@ var assetTree = require('./asset_tree.js'),
  * @return {Promise} resolved with flattened asset tree
  */
 function makeNodeList(filePath) {
-    var assetNode = new AssetNode({path: filePath});
+    var assetNode = new AssetNode({
+        path: filePath
+    });
     return new Promise(function(resolve, reject) {
         assetTree.makeTree(assetNode).then(function(assetNode) {
             resolve(_flattenAssetTree(assetNode));
@@ -28,7 +30,6 @@ function makeNodeList(filePath) {
  * @param wrap {Boolean} whether to wrap asset in module
  */
 function makeSingleNode(filePath, wrap) {
-    // console.log(filePath, wrap);
     return new Promise(function(resolve, reject) {
         var assetNode = new AssetNode({
             path: filePath,
@@ -38,7 +39,28 @@ function makeSingleNode(filePath, wrap) {
             assetNode.content = content;
             preprocessors.preprocess(assetNode);
             resolve(assetNode);
-        }).catch(reject);
+        }).
+        catch (reject);
+    });
+}
+
+/**
+ * @param {String} filePath of file to build
+ * @return {Promise} resolves with complete source of all files in
+ * bundle, compiled and processed
+ */
+function makeBundle(filePath) {
+    var assetNode = new AssetNode({
+        path: filePath
+    });
+    return new Promise(function(resolve, reject) {
+        assetTree.makeTree(assetNode).then(function(assetNode) {
+            var assetList = _flattenAssetTree(assetNode);
+            assetList.forEach(preprocessors.preprocess);
+            resolve(assetList.map(function(assetNode) {
+                return assetNode.content;
+            }).join("\n"));
+        }).fail(reject);
     });
 }
 
@@ -62,3 +84,4 @@ function _flattenAssetTree(assetNode, _list) {
 
 module.exports.makeNodeList = makeNodeList;
 module.exports.makeSingleNode = makeSingleNode;
+module.exports.makeBundle = makeBundle;
