@@ -6,6 +6,8 @@ var config = require('./config.js'),
     Q = require('q'),
     Promise = require('es6-promise').Promise,
     directiveToFiles = require('./directive_to_files.js'),
+    build = require('./build.js'),
+    path = require('path'),
     AVAILABLE_DIRECTIVE_TYPES = [
         'require_self',
         'require_lib',
@@ -48,15 +50,29 @@ Directives.prototype = {
         return deferred.promise;
     },
     /**
-     * get asset lists for all references (only for reference
+     * get asset lists for all referenced nodes (only for reference
      * directive) TODO: move it out and separate logic for diffrent
      * directives.
+     * resolves with list of {AssetNode}s
      */
-    getReferences: function() {
-        console.log('aaa');
-        var refs = this._getDirectivesByType('reference');
+    getReferencedNodes: function() {
+        var refs = this._getDirectivesByType('reference'),
+            paths = [];
+        refs.forEach(function(directive) {
+            paths = paths.concat(directive.args);
+        });
+        var promises = paths.map(function(filePath) {
+            filePath = path.resolve(config.assetPath, filePath);
+            return build.makeNodeList(filePath);
+        });
         return new Promise(function(resolve, reject) {
-            resolve(refs);
+            Promise.all(promises).then(function(lists) {
+                var list = [];
+                lists.forEach(function(nodes) {
+                    list = list.concat(nodes);
+                });
+                resolve(list);
+            }).catch(reject);
         });
     },
     /**
@@ -72,7 +88,8 @@ Directives.prototype = {
      * @return {Array} array of {Directive}
      */
     _extract: function(content) {
-        var match, fileNames = [], _this = this;
+        var match, fileNames = [],
+            _this = this;
         while (match = DIRECTIVE_PATTERN.exec(content)) {
             var directive = match[1],
                 args = match[2],

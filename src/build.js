@@ -4,6 +4,7 @@ var assetTree = require('./asset_tree.js'),
     path = require('path'),
     config = require('./config.js'),
     Promise = require('es6-promise').Promise,
+    references = require('./references.js'),
     Q = require('q');
 
 
@@ -54,27 +55,20 @@ function makeBundle(filePath) {
         path: filePath
     });
     return new Promise(function(resolve, reject) {
-        console.log(assetTree.makeTree(assetNode).then);
         assetTree.makeTree(assetNode).then(function(assetNode) {
             var assetList = _flattenAssetTree(assetNode);
             assetList.forEach(preprocessors.preprocess);
             var bundleSrc = assetList.map(function(assetNode) {
                 return assetNode.content;
             }).join("\n");
-            var refs = getAllReferences(assetList).then(function() {
-                resolve(JSON.stringify(refs) + "\n" + bundleSrc);
+            references.makeReferencesFunction(assetList).then(function() {
+                var ar = Array.prototype.slice.call(arguments);
+                resolve(JSON.stringify(ar) + "\n" + bundleSrc);
             }).catch(reject);
         }).fail(reject);
     });
 }
 
-function getAllReferences(assetList) {
-    console.log('ttt');
-    var promises = assetList.map(function(assetNode) {
-        return assetNode.directives.getReferences();
-    });
-    return Promise.all(promises);
-}
 
 /**
  * Flatten the node structure.

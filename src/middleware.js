@@ -11,6 +11,9 @@ function respondJs(res, content) {
     res.end(content);
 }
 
+/**
+ * respond with json with error trace
+ */
 function respondError(res, err) {
     res.writeHead(err.status || 500, {
         'Content-Type': 'application/json'
