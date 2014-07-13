@@ -4,6 +4,7 @@
 var config = require('./config.js'),
     Directive = require('./directive.js'),
     Q = require('q'),
+    Promise = require('es6-promise').Promise,
     directiveToFiles = require('./directive_to_files.js'),
     AVAILABLE_DIRECTIVE_TYPES = [
         'require_self',
@@ -11,7 +12,8 @@ var config = require('./config.js'),
         'require_tree',
         'require_directory',
         'require',
-        'exclude'
+        'exclude',
+        'reference'
     ],
     DIRECTIVE_PATTERN = new RegExp("\\/\\/\\s*=\\s*(" + AVAILABLE_DIRECTIVE_TYPES.join('|') + ")(.*)$", "gm");
 
@@ -44,6 +46,18 @@ Directives.prototype = {
             deferred.reject(err);
         });
         return deferred.promise;
+    },
+    /**
+     * get asset lists for all references (only for reference
+     * directive) TODO: move it out and separate logic for diffrent
+     * directives.
+     */
+    getReferences: function() {
+        console.log('aaa');
+        var refs = this._getDirectivesByType('reference');
+        return new Promise(function(resolve, reject) {
+            resolve(refs);
+        });
     },
     /**
      * @param type {String}

@@ -11,6 +11,19 @@ function respondJs(res, content) {
     res.end(content);
 }
 
+function respondError(res, err) {
+    res.writeHead(err.status || 500, {
+        'Content-Type': 'application/json'
+    });
+    var stack = err.stack;
+    stack && (stack = stack.split('\n'));
+    res.end(JSON.stringify({
+        msg: err.msg,
+        err: err.toString(),
+        stack: stack
+    }));
+}
+
 /**
  * express middleware
  */
@@ -21,17 +34,16 @@ module.exports = function(req, res) {
         // return compiled bundle
         api.bundle(path).then(function(content) {
             respondJs(res, content);
-        }).catch(function(e) {
-            res.writeHead(500);
-            res.end(JSON.stringify(e.toString()));
+        }).
+        catch (function(err) {
+            respondError(res, err);
         });
     } else { // get single asset
         api.getAsset(path, req.query.wrap).then(function(content) {
             respondJs(res, content);
         }).
-        catch (function(e) {
-            res.writeHead(500);
-            res.end(JSON.stringify(e.toString()));
+        catch (function(err) {
+            respondError(res, err);
         });
     }
 };

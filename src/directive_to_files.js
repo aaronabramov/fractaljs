@@ -13,7 +13,15 @@ var config = require('./config.js'),
     path = require('path'),
     fs = require('fs'),
     Q = require('q'),
-    walk = require('walk');
+    Promise = require('es6-promise').Promise,
+    walk = require('walk'),
+    // list of directives that are convertible to files
+    DIRECTIVES = {
+        "require_tree": true,
+        "require_directory": true,
+        "require": true,
+        "require_lib": true
+    };
 
 module.exports = {
     /**
@@ -23,7 +31,12 @@ module.exports = {
      * @return {Q.promise} resolves with file list
      */
     getFiles: function(root, directiveType, args) {
-        return this[directiveType](root, args);
+        // try to convert to file list. if not convertible then skip
+        if (DIRECTIVES[directiveType]) {
+            return this[directiveType](root, args);
+        } else {
+            return Promise.resolve([]);
+        }
     },
     "require_tree": function(root, args) {
         if (!root) {
@@ -101,16 +114,6 @@ module.exports = {
     "require_lib": function() {
         var d = Q.defer();
         d.resolve([config.LIB_PATH]);
-        return d.promise;
-    },
-    "require_self": function() {
-        var d = Q.defer();
-        d.resolve([]);
-        return d.promise;
-    },
-    "exclude": function() {
-        var d = Q.defer();
-        d.resolve([]);
         return d.promise;
     }
 };

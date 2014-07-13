@@ -54,14 +54,26 @@ function makeBundle(filePath) {
         path: filePath
     });
     return new Promise(function(resolve, reject) {
+        console.log(assetTree.makeTree(assetNode).then);
         assetTree.makeTree(assetNode).then(function(assetNode) {
             var assetList = _flattenAssetTree(assetNode);
             assetList.forEach(preprocessors.preprocess);
-            resolve(assetList.map(function(assetNode) {
+            var bundleSrc = assetList.map(function(assetNode) {
                 return assetNode.content;
-            }).join("\n"));
+            }).join("\n");
+            var refs = getAllReferences(assetList).then(function() {
+                resolve(JSON.stringify(refs) + "\n" + bundleSrc);
+            }).catch(reject);
         }).fail(reject);
     });
+}
+
+function getAllReferences(assetList) {
+    console.log('ttt');
+    var promises = assetList.map(function(assetNode) {
+        return assetNode.directives.getReferences();
+    });
+    return Promise.all(promises);
 }
 
 /**
