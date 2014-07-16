@@ -34,7 +34,9 @@ function getPath(assetNode, deferred) {
     assetNode.fetchContent().then(function(content) {
         assetNode.content = content;
         recurMakeTree(assetNode, deferred);
-    }).catch(function(e) { deferred.reject(e); });
+    }).catch(function(e) {
+        deferred.reject(e);
+    });
     return deferred.promise;
 }
 
