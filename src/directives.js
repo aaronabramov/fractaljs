@@ -61,6 +61,7 @@ Directives.prototype = {
         refs.forEach(function(directive) {
             paths = paths.concat(directive.args);
         });
+        console.log(paths);
         var promises = paths.map(function(filePath) {
             filePath = path.resolve(config.assetPath, filePath);
             return build.makeNodeList(filePath);

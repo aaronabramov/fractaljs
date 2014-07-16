@@ -13,7 +13,14 @@ module.exports = {
         });
         return new Promise(function(resolve, reject) {
             Promise.all(promises).then(function(lists) {
-                resolve(lists);
+                var assetNodes = [];
+                lists.forEach(function(list) {
+                    list.forEach(function(assetNode) {
+                        assetNodes.push(assetNode);
+                        resolve(assetNodes);
+                        // TODO hashmap package -> module/file
+                    });
+                });
             }).
             catch(reject);
         });
