@@ -24,6 +24,7 @@ var config = require('./config.js'),
  */
 function Directives(file) {
     this.path = file.path;
+    this.dirname = path.dirname(this.path);
     this.directives = this._extract(file.content);
 }
 
@@ -43,6 +44,7 @@ Directives.prototype = {
             fileLists.forEach(function(list) {
                 files = files.concat(list);
             });
+            console.log('files', files);
             deferred.resolve(files);
         }).fail(function(err) {
             deferred.reject(err);
@@ -57,12 +59,13 @@ Directives.prototype = {
      */
     getReferencedNodes: function() {
         var refs = this._getDirectivesByType('reference'),
-            paths = [];
+            paths = [],
+            _this = this;
         refs.forEach(function(directive) {
             paths = paths.concat(directive.args);
         });
         paths = paths.map(function(filePath) {
-            return path.resolve(config.assetPath, filePath);
+            return path.resolve(_this.dirname, filePath);
         });
         var relativePaths = paths.map(function(filePath) {
             return path.relative(config.assetPath, filePath);

@@ -49,7 +49,7 @@ Directive.prototype = {
      */
     _makeAssetNode: function(filePath) {
         return new AssetNode({
-            path: filePath,
+            path: path.resolve(config.assetPath, filePath),
             wrap: this._isWrappedInModule()
         });
     },
