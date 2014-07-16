@@ -1,4 +1,6 @@
-var AssetNode = require('./asset_node.js');
+var AssetNode = require('./asset_node.js'),
+    config = require('./config.js'),
+    path = require('path');
 
 /**
  * Module represents one directive. e.g.
@@ -9,12 +11,13 @@ var directiveToFiles = require('./directive_to_files.js'),
     Promise = require('es6-promise').Promise;
 
 /**
- * @param path {String} path to the file that contains directive
+ * @param filePath {String} path to the file that contains directive
  * @param directive {Array} parsed directive and it's args
  * e.g. ['require_tree', './tree', 'wrap_in_module']
  */
-function Directive(path, directive) {
-    this.path = path;
+function Directive(filePath, directive) {
+    this.path = filePath;
+    this.dirname = path.dirname(this.path);
     this.type = directive[0];
     this.args = directive.slice(1);
     this._makeAssetNode = this._makeAssetNode.bind(this);
@@ -31,8 +34,11 @@ Directive.prototype = {
         return new Promise(function(resolve, reject) {
             directiveToFiles.getFiles(
                 _this.path, _this.type, _this.args
-            ).then(function(files) {
-                resolve(files.map(_this._makeAssetNode));
+            ).then(function(filePaths) {
+                filePaths = filePaths.map(function(filePath) {
+                    return path.relative(config.assetPath, filePath);
+                });
+                resolve(filePaths.map(_this._makeAssetNode));
             }).catch(reject);
         });
     },

@@ -106,8 +106,8 @@ module.exports = {
     },
     "require": function(root, args) {
         var deferred = Q.defer();
-
-        var fileName = path.resolve(config.assetPath, args[0]);
+        var rootDirname = path.dirname(root);
+        var fileName = path.resolve(rootDirname, args[0]);
         deferred.resolve([fileName]);
         return deferred.promise;
     },

@@ -61,6 +61,7 @@ function makeBundle(filePath) {
             var bundleSrc = assetList.map(function(assetNode) {
                 return assetNode.content;
             }).join("\n");
+            // TODO: recur referencing
             references.makeReferencesFunction(assetList).then(function(lists) {
                 resolve(JSON.stringify(lists, null, 2) + "\n" + bundleSrc);
             }).catch(reject);

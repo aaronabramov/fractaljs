@@ -23,6 +23,9 @@ AssetNode.prototype = {
     relativePath: function() {
         return path.relative(config.assetPath, this.path);
     },
+    absolutePath: function() {
+        return path.resolve(config.assetPath, this.path);
+    },
     /**
      * readFile `this.path` and resolve promise with it's content
      * @return {Promise}
@@ -30,7 +33,7 @@ AssetNode.prototype = {
     fetchContent: function() {
         var _this = this;
         return new Promise(function(resolve, reject) {
-            fs.readFile(_this.path, function(err, content) {
+            fs.readFile(_this.absolutePath(), function(err, content) {
                 if (err) {
                     reject(err);
                 } else {
