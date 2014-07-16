@@ -54,6 +54,7 @@ function makeBundle(filePath) {
     var assetNode = new AssetNode({
         path: filePath
     });
+    console.log(filePath);
     return new Promise(function(resolve, reject) {
         assetTree.makeTree(assetNode).then(function(assetNode) {
             var assetList = _flattenAssetTree(assetNode);

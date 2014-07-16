@@ -31,7 +31,7 @@ function respondError(res, err) {
  * express middleware
  */
 module.exports = function(req, res) {
-    var path = req.params.path;
+    var path = req.params[0];
     // request for compiled bundle
     if (req.query.bundle) {
         // return compiled bundle
