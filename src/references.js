@@ -8,21 +8,16 @@ module.exports = {
      */
     makeReferencesFunction: function(assetList) {
         // ---------------- WIP -----------------
+        // TODO: write function that will add resulting map
+        // to internal `require` data structure to keep track
+        // of modules
         var promises = assetList.map(function(assetNode) {
             return assetNode.directives.getReferencedNodes();
         });
         return new Promise(function(resolve, reject) {
             Promise.all(promises).then(function(map) {
                 resolve(map);
-                // lists.forEach(function(list) {
-                //     list.forEach(function(assetNode) {
-                //         assetNodes.push(assetNode);
-                //         resolve(assetNodes);
-                //         // TODO hashmap package -> module/file
-                //     });
-                // });
-            }).
-            catch(reject);
+            }).catch(reject);
         });
     }
 };

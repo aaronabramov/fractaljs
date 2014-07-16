@@ -44,7 +44,6 @@ Directives.prototype = {
             fileLists.forEach(function(list) {
                 files = files.concat(list);
             });
-            console.log('files', files);
             deferred.resolve(files);
         }).fail(function(err) {
             deferred.reject(err);
@@ -55,7 +54,7 @@ Directives.prototype = {
      * get asset lists for all referenced nodes (only for reference
      * directive) TODO: move it out and separate logic for diffrent
      * directives.
-     * resolves with list of {AssetNode}s
+     * resolves with hashmap of bundlePath -> [modulePaths]
      */
     getReferencedNodes: function() {
         var refs = this._getDirectivesByType('reference'),
