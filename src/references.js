@@ -7,7 +7,7 @@ module.exports = {
      * @param assetList {Array} list of {AssetNode}s
      */
     makeReferencesFunction: function(assetList) {
-        // ---------------- WIP -----------------
+        var _this = this;
         // TODO: write function that will add resulting map
         // to internal `require` data structure to keep track
         // of modules
@@ -15,9 +15,30 @@ module.exports = {
             return assetNode.directives.getReferencedNodes();
         });
         return new Promise(function(resolve, reject) {
-            Promise.all(promises).then(function(map) {
-                resolve(map);
+            Promise.all(promises).then(function(maps) {
+                resolve(_this._mergeRefMaps(maps));
             }).catch(reject);
         });
+    },
+    /**
+     * merge multiple reference maps into one
+     *
+     * @param maps {Array} of maps
+     *      {
+     *          "module1.js": ["bundle1.js", "bundle2.js"]
+     *      }
+     */
+    _mergeRefMaps: function(maps) {
+        var result = {};
+        maps.forEach(function(map) {
+            for (var module in map) {
+                if (result[module]) {
+                    result[module].concat(map[module]);
+                } else {
+                    result[module] = map[module];
+                }
+            }
+        });
+        return result;
     }
 };

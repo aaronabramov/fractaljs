@@ -85,9 +85,25 @@ Directives.prototype = {
                     });
                     map[relativePaths[i]] = moduleList;
                 }
-                resolve(map);
+                resolve(_this._invertRefKeys(map));
             }).catch(reject);
         });
+    },
+    /**
+     * converm original ref map (bundleName -> [modules]) into
+     * moduleName -> [bundles]
+     * 
+     * @param map {Object} bundleName -> [listOfModules]
+     */
+    _invertRefKeys: function(map) {
+        var reversedMap = {};
+        for(var bundle in map) {
+            map[bundle].forEach(function(module) {
+                reversedMap[module] || (reversedMap[module] = []);
+                reversedMap[module].push(bundle);
+            });
+        }
+        return reversedMap;
     },
     /**
      * @param type {String}
