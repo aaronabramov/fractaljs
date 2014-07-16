@@ -61,18 +61,29 @@ Directives.prototype = {
         refs.forEach(function(directive) {
             paths = paths.concat(directive.args);
         });
-        console.log(paths);
+        paths = paths.map(function(filePath) {
+            return path.resolve(config.assetPath, filePath);
+        });
+        var relativePaths = paths.map(function(filePath) {
+            return path.relative(config.assetPath, filePath);
+        });
+
         var promises = paths.map(function(filePath) {
-            filePath = path.resolve(config.assetPath, filePath);
             return build.makeNodeList(filePath);
         });
+
         return new Promise(function(resolve, reject) {
             Promise.all(promises).then(function(lists) {
-                var list = [];
-                lists.forEach(function(nodes) {
-                    list = list.concat(nodes);
-                });
-                resolve(list);
+                var map = {},
+                    moduleList;
+                // create a map relativePath -> list of assetNodes
+                for (var i = 0, length = lists.length; i < length; i++) {
+                    moduleList = lists[i].map(function(assetNode) {
+                        return assetNode.relativePath();
+                    });
+                    map[relativePaths[i]] = moduleList;
+                }
+                resolve(map);
             }).catch(reject);
         });
     },

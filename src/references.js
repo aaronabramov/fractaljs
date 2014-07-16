@@ -12,15 +12,15 @@ module.exports = {
             return assetNode.directives.getReferencedNodes();
         });
         return new Promise(function(resolve, reject) {
-            Promise.all(promises).then(function(lists) {
-                var assetNodes = [];
-                lists.forEach(function(list) {
-                    list.forEach(function(assetNode) {
-                        assetNodes.push(assetNode);
-                        resolve(assetNodes);
-                        // TODO hashmap package -> module/file
-                    });
-                });
+            Promise.all(promises).then(function(map) {
+                resolve(map);
+                // lists.forEach(function(list) {
+                //     list.forEach(function(assetNode) {
+                //         assetNodes.push(assetNode);
+                //         resolve(assetNodes);
+                //         // TODO hashmap package -> module/file
+                //     });
+                // });
             }).
             catch(reject);
         });

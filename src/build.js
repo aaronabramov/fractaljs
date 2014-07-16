@@ -62,7 +62,7 @@ function makeBundle(filePath) {
                 return assetNode.content;
             }).join("\n");
             references.makeReferencesFunction(assetList).then(function(lists) {
-                resolve(JSON.stringify(lists) + "\n" + bundleSrc);
+                resolve(JSON.stringify(lists, null, 2) + "\n" + bundleSrc);
             }).catch(reject);
         }).fail(reject);
     });
