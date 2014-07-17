@@ -41,7 +41,7 @@ function makeSingleNode(filePath, wrap) {
             preprocessors.preprocess(assetNode);
             resolve(assetNode);
         }).
-        catch (reject);
+        catch(reject);
     });
 }
 
@@ -63,8 +63,8 @@ function makeBundle(filePath) {
                 return assetNode.content;
             }).join("\n");
             // TODO: recur referencing
-            references.makeReferencesFunction(assetList).then(function(lists) {
-                resolve(JSON.stringify(lists, null, 2) + "\n" + bundleSrc);
+            references.makeReferencesFunction(assetList).then(function(func) {
+                resolve(bundleSrc + func);
             }).catch(reject);
         }).fail(reject);
     });

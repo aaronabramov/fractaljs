@@ -1,4 +1,6 @@
-var Promise = require('es6-promise').Promise;
+var Promise = require('es6-promise').Promise,
+    FN_OPEN = '\nrequire.loadReferences(',
+    FN_CLOSE = ');\n';
 
 module.exports = {
     /**
@@ -16,7 +18,10 @@ module.exports = {
         });
         return new Promise(function(resolve, reject) {
             Promise.all(promises).then(function(maps) {
-                resolve(_this._mergeRefMaps(maps));
+                var func = FN_OPEN +
+                    JSON.stringify(_this._mergeRefMaps(maps)) +
+                    FN_CLOSE;
+                resolve(func);
             }).catch(reject);
         });
     },
