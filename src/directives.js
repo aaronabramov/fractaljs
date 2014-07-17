@@ -10,7 +10,7 @@ var config = require('./config.js'),
     path = require('path'),
     AVAILABLE_DIRECTIVE_TYPES = [
         'require_self',
-        'require_lib',
+        'require_fractal',
         'require_tree',
         'require_directory',
         'require',

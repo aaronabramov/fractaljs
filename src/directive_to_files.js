@@ -20,7 +20,7 @@ var config = require('./config.js'),
         "require_tree": true,
         "require_directory": true,
         "require": true,
-        "require_lib": true
+        "require_fractal": true
     };
 
 module.exports = {
@@ -111,7 +111,7 @@ module.exports = {
         deferred.resolve([fileName]);
         return deferred.promise;
     },
-    "require_lib": function() {
+    "require_fractal": function() {
         var d = Q.defer();
         d.resolve([config.LIB_PATH]);
         return d.promise;
