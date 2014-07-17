@@ -27,7 +27,7 @@ module.exports = 'submodule';
 
 
 ```html
-<script src="/assets/app.js></script>
+<script src="/assets/app.js"></script>
 <script>
     var submodule = require('submodule.js'); // require synchonously
     console.log(submodule) // => 'submodule'

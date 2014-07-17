@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/dmitriiabramov/async-require.git"
+    "url": "git://github.com/dmitriiabramov/fractaljs.git"
   },
   "author": "Dmitrii Abramov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dmitriiabramov/async-require/issues"
+    "url": "https://github.com/dmitriiabramov/fractaljs/issues"
   },
-  "homepage": "https://github.com/dmitriiabramov/async-require",
+  "homepage": "https://github.com/dmitriiabramov/fractaljs",
   "dependencies": {
       "minimist": "0.0.8",
       "walk": "2.3.3",
