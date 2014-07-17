@@ -27,7 +27,7 @@ module.exports = {
     /**
      * @param root {String} path of the file that contains directive
      * @param directiveType {String} (require_tree, require_directory...)
-     * @param args {Array} ['./tree', 'wrap_in_module']
+     * @param args {Array} ['./tree', 'module']
      * @return {Q.promise} resolves with file list
      */
     getFiles: function(root, directiveType, args) {

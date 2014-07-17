@@ -4,7 +4,7 @@ var AssetNode = require('./asset_node.js'),
 
 /**
  * Module represents one directive. e.g.
- * ['require', './path/to/file.js', 'wrap_in_module']
+ * ['require', './path/to/file.js', 'module']
  * and provides operations on it
  */
 var directiveToFiles = require('./directive_to_files.js'),
@@ -13,7 +13,7 @@ var directiveToFiles = require('./directive_to_files.js'),
 /**
  * @param filePath {String} path to the file that contains directive
  * @param directive {Array} parsed directive and it's args
- * e.g. ['require_tree', './tree', 'wrap_in_module']
+ * e.g. ['require_tree', './tree', 'module']
  */
 function Directive(filePath, directive) {
     this.path = filePath;
@@ -24,7 +24,7 @@ function Directive(filePath, directive) {
 }
 
 Directive.prototype = {
-    WRAP_IN_MODULE_ARG: 'wrap_in_module',
+    WRAP_IN_MODULE_ARG: 'module',
 
     /**
      * @return {Promise} resolves with list {AssetNode}s
