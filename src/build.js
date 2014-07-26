@@ -72,16 +72,16 @@ function makeBundle(filePath) {
 
 /**
  * Flatten the node structure.
- * TODO: done this way because in future there will be directives like `exclude ./file/path.js`
- * and first, we'll need complete tree with files, their directives and content, and then
- * we'll cut off excluded branches.
+ * Remove ignored nodes
  *
  * @param assetNode {AssetNode}
  * @param [_list] {Array} recursivelly pass and modify
  */
 function _flattenAssetTree(assetNode, _list) {
     _list = (_list || []);
-    _list.push(assetNode);
+    if (!assetNode.ignore) {
+        _list.push(assetNode);
+    }
     assetNode.children.forEach(function(child) {
         _flattenAssetTree(child, _list);
     });

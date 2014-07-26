@@ -119,6 +119,9 @@ Directives.prototype = {
      * return directives of given type
      */
     _getDirectivesByType: function(type) {
+        if (!this.directives) {
+            return [];
+        }
         return this.directives.filter(function(directive) {
             return directive.type === type;
         });

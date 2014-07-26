@@ -1,5 +1,6 @@
 var fs = require('fs'),
     config = require('./config.js'),
+    Directives = require('./directives.js'),
     path = require('path'),
     Promise = require('es6-promise').Promise;
 
@@ -10,12 +11,13 @@ var fs = require('fs'),
  * @param [option.directives] {Array}
  */
 function AssetNode(options) {
-    if (!options.path) { throw new Error('path is required'); }
+    if (!options.path) {
+        throw new Error('path is required');
+    }
     this.path = options.path;
     // this.path = path.resolve(config.assetPath, options.path);
     this.content = options.content;
     this.wrap = options.wrap;
-    this.directives = options.directives;
     this.children = options.children || [];
     // whether node has to be parsed and it's directives need to be
     // processed.
@@ -23,12 +25,18 @@ function AssetNode(options) {
     if (options.parse != null) {
         this.parse = options.parse;
     }
-     // flag to indicate whether node will be ignored during
-     // the build step.
+    // flag to indicate whether node will be ignored during
+    // the build step.
     this.ignore = false;
 }
 
 AssetNode.prototype = {
+    initDirectives: function() {
+        this.directives = new Directives(this);
+        if (this.directives._getDirectivesByType('require_self').length) {
+            this.ignore = true;
+        }
+    },
     relativePath: function() {
         var relativePath = path.relative(config.assetPath, this.path);
         if (relativePath.length && relativePath[0] !== '.') {

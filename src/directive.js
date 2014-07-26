@@ -1,5 +1,4 @@
-var AssetNode = require('./asset_node.js'),
-    config = require('./config.js'),
+var config = require('./config.js'),
     path = require('path');
 
 /**
@@ -48,6 +47,7 @@ Directive.prototype = {
      * @return {AssetNode}
      */
     _makeAssetNode: function(filePath) {
+        var AssetNode = require('./asset_node.js');
         return new AssetNode({
             path: path.resolve(config.assetPath, filePath),
             wrap: this._isWrappedInModule(),

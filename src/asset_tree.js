@@ -3,7 +3,6 @@ var config = require('./config.js'),
     utils = require('./utils.js'),
     fs = require('fs'),
     glob = require('glob'),
-    Directives = require('./directives.js'),
     AssetNode = require('./asset_node.js');
 
 /**
@@ -75,7 +74,7 @@ function getGlob(assetNode) {
  */
 function recurMakeTree(assetNode, deferred) {
     var branches, filesToRequire;
-    assetNode.directives = new Directives(assetNode);
+    assetNode.initDirectives();
     filesToRequire = assetNode.directives.filesToRequire();
 
     filesToRequire.then(function(list) {
