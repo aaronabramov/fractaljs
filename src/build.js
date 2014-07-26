@@ -40,8 +40,7 @@ function makeSingleNode(filePath, wrap) {
             assetNode.content = content;
             preprocessors.preprocess(assetNode);
             resolve(assetNode);
-        }).
-        catch(reject);
+        }).catch(reject);
     });
 }
 
