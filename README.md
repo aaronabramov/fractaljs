@@ -37,6 +37,13 @@ module.exports = 'submodule';
 </script>
 ```
 
+### Express middleware
+```javascript
+var fractal = require('fractaljs');
+fractal.config().assetPath = path.resolve(__dirname, './client');
+app.use('/assets/*', fractal.middleware);
+```
+
 
 ### development
 ```shell
