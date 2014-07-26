@@ -1,19 +1,20 @@
 var path = require('path'),
     config = require('../config.js'),
     DEFINE = 'define("',
-    HEADER = '", function (exports, module) {\n',
+    HEADER = '", function (exports, module, require) {\n',
     FOOTER = '});';
 
-module.exports = function(filePath, src) {
+module.exports = function(assetNode) {
+    var filePath = assetNode.relativePath();
     checkName(filePath);
-    return DEFINE + makeModuleName(filePath) + HEADER + src + FOOTER;
+    return DEFINE + makeModuleName(assetNode) + HEADER + assetNode.content + FOOTER;
 };
 
 /**
  * @return {String} path to file relative to root config.assetPath
  */
-function makeModuleName(filePath) {
-    return path.relative(config.assetPath, filePath);
+function makeModuleName(assetNode) {
+    return assetNode.relativePath();
 }
 
 /**
