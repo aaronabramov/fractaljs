@@ -18,7 +18,7 @@
         // cache script tag for later cleanup
         scriptTags.push(scriptTag);
         scriptTag.onload = function() {
-            callback(window.require(moduleName));
+            callback();
         };
         document.body.appendChild(scriptTag);
     }
@@ -68,7 +68,6 @@
      * @throws Will throw error if module is not found in cache.
      */
     function require(__module__, request) {
-        console.log(arguments);
         var filename = resolve(request, parent),
             module = modules[filename];
         if (!module) {
@@ -77,7 +76,8 @@
         if (module.exports) {
             return module.exports;
         }
-        module.exports = module.fn(module.exports, module, makeRequireFn(module));
+        module.exports = {};
+        module.fn(module.exports, module, makeRequireFn(module));
         return module.exports;
     }
 
@@ -89,8 +89,7 @@
      *
      * @param moduleName {String} module name
      * @param callback {Function} function that will be invoked after module
-     *      has been fetched and loaded. module.exports will be passed into
-     *      callback function.
+     *      has been fetched and loaded.
      * @throws Will throw an error if module is not found in cache or package
      *      files.
      */
@@ -98,7 +97,7 @@
         if (modules[moduleName]) {
             // If module is already loaded then defer callback invokation
             setTimeout(function() {
-                callback(window.require(moduleName));
+                callback();
             }, 1);
         } else {
             // else try to find module name in the references
