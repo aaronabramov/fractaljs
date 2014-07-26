@@ -50,7 +50,8 @@ Directive.prototype = {
     _makeAssetNode: function(filePath) {
         return new AssetNode({
             path: path.resolve(config.assetPath, filePath),
-            wrap: this._isWrappedInModule()
+            wrap: this._isWrappedInModule(),
+            parse: this._needToParse()
         });
     },
     /**
@@ -62,6 +63,9 @@ Directive.prototype = {
         return this.args.some(function(arg) {
             return arg === _this.WRAP_IN_MODULE_ARG;
         });
+    },
+    _needToParse: function() {
+        return this.type !== 'require_self';
     }
 };
 

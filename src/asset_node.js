@@ -17,6 +17,15 @@ function AssetNode(options) {
     this.wrap = options.wrap;
     this.directives = options.directives;
     this.children = options.children || [];
+    // whether node has to be parsed and it's directives need to be
+    // processed.
+    this.parse = true;
+    if (options.parse != null) {
+        this.parse = options.parse;
+    }
+     // flag to indicate whether node will be ignored during
+     // the build step.
+    this.ignore = false;
 }
 
 AssetNode.prototype = {

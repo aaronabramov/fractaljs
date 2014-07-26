@@ -20,35 +20,41 @@ var config = require('./config.js'),
     DIRECTIVE_PATTERN = new RegExp("\\/\\/\\s*=\\s*(" + AVAILABLE_DIRECTIVE_TYPES.join('|') + ")(.*)$", "gm");
 
 /**
- * @param file {Object} {path: '', content: ''...}
+ * @param assetNode {AssetNode}
  */
-function Directives(file) {
-    this.path = file.path;
+function Directives(assetNode) {
+    this.parse = assetNode.parse; // need to parse?
+    this.path = assetNode.path;
     this.dirname = path.dirname(this.path);
-    this.directives = this._extract(file.content);
+    if (this.parse) {
+        this.directives = this._extract(assetNode.content);
+    }
 }
 
 Directives.prototype = {
     /**
-     * @return {Q.promise} resolves with list of files to require
+     * @return {Promise} resolves with list of files to require
      */
     filesToRequire: function() {
-        var _this = this,
-            deferred = Q.defer(),
-            filesPaths = [],
-            promises = this.directives.map(function(directive) {
-                return directive.filesToRequire();
+        if (!this.parse) {
+            return Promise.resolve([]);
+        }
+        var _this = this;
+        return new Promise(function(resolve, reject) {
+            var filesPaths = [],
+                promises = _this.directives.map(function(directive) {
+                    return directive.filesToRequire();
+                });
+            Promise.all(promises).then(function(fileLists) {
+                var files = [];
+                fileLists.forEach(function(list) {
+                    files = files.concat(list);
+                });
+                resolve(files);
+            }).catch(function(err) {
+                reject(err);
             });
-        Q.all(promises).then(function(fileLists) {
-            var files = [];
-            fileLists.forEach(function(list) {
-                files = files.concat(list);
-            });
-            deferred.resolve(files);
-        }).fail(function(err) {
-            deferred.reject(err);
         });
-        return deferred.promise;
     },
     /**
      * get asset lists for all referenced nodes (only for reference
@@ -57,6 +63,9 @@ Directives.prototype = {
      * resolves with hashmap of bundlePath -> [modulePaths]
      */
     getReferencedNodes: function() {
+        if (!this.parse) {
+            return Promise.resolve({});
+        }
         var refs = this._getDirectivesByType('reference'),
             paths = [],
             _this = this;
@@ -92,12 +101,12 @@ Directives.prototype = {
     /**
      * converm original ref map (bundleName -> [modules]) into
      * moduleName -> [bundles]
-     * 
+     *
      * @param map {Object} bundleName -> [listOfModules]
      */
     _invertRefKeys: function(map) {
         var reversedMap = {};
-        for(var bundle in map) {
+        for (var bundle in map) {
             map[bundle].forEach(function(module) {
                 reversedMap[module] || (reversedMap[module] = []);
                 reversedMap[module].push(bundle);

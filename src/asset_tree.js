@@ -92,7 +92,7 @@ function recurMakeTree(assetNode, deferred) {
         }).fail(function(err) {
             deferred.reject(err);
         });
-    }).fail(function(err) {
+    }).catch(function(err) {
         deferred.reject(err);
     });
 

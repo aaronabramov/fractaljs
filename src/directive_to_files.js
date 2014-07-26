@@ -21,7 +21,8 @@ var config = require('./config.js'),
         "require_tree": true,
         "require_directory": true,
         "require": true,
-        "require_fractal": true
+        "require_fractal": true,
+        "require_self": true
     };
 
 module.exports = {
@@ -123,7 +124,7 @@ module.exports = {
     },
     "require_self": function(root, args) {
         return new Promise(function(resolve, reject) {
-            resolve(root);
+            resolve([root]);
         });
     }
 };
