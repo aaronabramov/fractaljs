@@ -56,7 +56,7 @@ function getGlob(assetNode) {
     }, function(err, files) {
         if (err) return deferred.reject(err);
         if (!files.length) {
-            return deferred.reject('no files found. path: ' + pattern);
+            return deferred.reject(new Error('no files found. path: ' + pattern));
         }
         assetNode.path = files[0];
         getPath(assetNode, deferred);

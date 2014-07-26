@@ -30,7 +30,7 @@ function compile(assetNode) {
         preprocessor = PREPROCESSORS[preprocessorName];
 
     if (preprocessor) {
-        assetNode.content = preprocessor(assetNode.path, assetNode.content);
+        assetNode.content = preprocessor(assetNode);
     }
     return assetNode;
 }
@@ -40,7 +40,7 @@ function compile(assetNode) {
  */
 function wrap(assetNode) {
     if (needsToBeWrapped(assetNode)) {
-        assetNode.content = PREPROCESSORS['module'](assetNode.path, assetNode.content);
+        assetNode.content = PREPROCESSORS['module'](assetNode);
     }
     return assetNode;
 }
