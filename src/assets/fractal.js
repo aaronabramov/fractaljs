@@ -39,15 +39,103 @@
         };
     }
 
+/*****/    // joyent/node 'path' module
+/*****/
+/*****/    // Split a filename into [root, dir, basename, ext], unix version
+/*****/    // 'root' is just a slash, or nothing.
+/*****/    var splitPathRe =
+/*****/        /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+/*****/    var splitPath = function(filename) {
+/*****/        return splitPathRe.exec(filename).slice(1);
+/*****/    };
+/*****/
+/*****/    window.splitPath = splitPath;
+/*****/
+/*****/    function path_dirname(path) {
+/*****/        var result = splitPath(path),
+/*****/            root = result[0],
+/*****/            dir = result[1];
+/*****/
+/*****/        if (!root && !dir) {
+/*****/            // No dirname whatsoever
+/*****/            return '.';
+/*****/        }
+/*****/
+/*****/        if (dir) {
+/*****/            // It has a dirname, strip trailing slash
+/*****/            dir = dir.substr(0, dir.length - 1);
+/*****/        }
+/*****/
+/*****/        return root + dir;
+/*****/    }
+/*****/
+/*****/    // resolves . and .. elements in a path array with directory names there
+/*****/    // must be no slashes, empty elements, or device names (c:\) in the array
+/*****/    // (so also no leading and trailing slashes - it does not distinguish
+/*****/    // relative and absolute paths)
+/*****/    function normalizeArray(parts, allowAboveRoot) {
+/*****/        // if the path tries to go above the root, `up` ends up > 0
+/*****/        var up = 0;
+/*****/        for (var i = parts.length - 1; i >= 0; i--) {
+/*****/            var last = parts[i];
+/*****/            if (last === '.') {
+/*****/                parts.splice(i, 1);
+/*****/            } else if (last === '..') {
+/*****/                parts.splice(i, 1);
+/*****/                up++;
+/*****/            } else if (up) {
+/*****/                parts.splice(i, 1);
+/*****/                up--;
+/*****/            }
+/*****/        }
+/*****/
+/*****/        // if the path is allowed to go above the root, restore leading ..s
+/*****/        if (allowAboveRoot) {
+/*****/            for (; up--; up) {
+/*****/                parts.unshift('..');
+/*****/            }
+/*****/        }
+/*****/
+/*****/        return parts;
+/*****/    }
+/*****/
+/*****/    function normalize(path) {
+/*****/        var isAbsolute = path.charAt(0) === '/';
+/*****/            trailingSlash = path.substr(-1) === '/';
+/*****/
+/*****/        // Normalize the path
+/*****/        path = normalizeArray(path.split('/').filter(function(p) {
+/*****/            return !!p;
+/*****/        }), !isAbsolute).join('/');
+/*****/
+/*****/        if (!path && !isAbsolute) {
+/*****/            path = '.';
+/*****/        }
+/*****/        if (path && trailingSlash) {
+/*****/            path += '/';
+/*****/        }
+/*****/
+/*****/        return (isAbsolute ? '/' : '') + path;
+/*****/    }
+/*****/
+/*****/
+
     /**
      * resolve module path based on parent if it exists
      * @param request {String} file path relative to current module
      *      or package name (e.g. 'path') which will be resolved to abs filename
-     * @param [parent] {module} module object
+     * @param [parentModule] {module} module object
      * @return {String} filename (path relative to root)
      */
-    function resolve(request, parent) {
-        return request; // TODO
+    function resolve(request, parentModule) {
+        var resolved;
+        if (parentModule) {
+            var dirname = path_dirname(parentModule.filename);
+            resolved = './' + normalize(dirname + '/' + request);
+        } else {
+            resolved = request;
+        }
+        return resolved; // TODO
     }
 
     /**
@@ -68,7 +156,7 @@
      * @throws Will throw error if module is not found in cache.
      */
     function require(__module__, request) {
-        var filename = resolve(request, parent),
+        var filename = resolve(request, __module__),
             module = modules[filename];
         if (!module) {
             throw new Error('module [' + request + '] not found');
