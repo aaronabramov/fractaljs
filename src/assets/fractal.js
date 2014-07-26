@@ -131,6 +131,8 @@
         var resolved;
         if (parentModule) {
             var dirname = path_dirname(parentModule.filename);
+            // hacky way to get normalized path relative to `config.assetpath`
+            // TODO: rewrite path resolving
             resolved = './' + normalize(dirname + '/' + request);
         } else {
             resolved = request;

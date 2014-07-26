@@ -15,6 +15,7 @@ var config = require('./config.js'),
     Q = require('q'),
     Promise = require('es6-promise').Promise,
     walk = require('walk'),
+    nodeResolve = require('resolve'),
     // list of directives that are convertible to files
     DIRECTIVES = {
         "require_tree": true,
@@ -105,15 +106,24 @@ module.exports = {
         return deferred.promise;
     },
     "require": function(root, args) {
-        var deferred = Q.defer();
-        var rootDirname = path.dirname(root);
-        var fileName = path.resolve(rootDirname, args[0]);
-        deferred.resolve([fileName]);
-        return deferred.promise;
+        return new Promise(function(resolve, reject) {
+            var rootDirname = path.dirname(root);
+            nodeResolve(args[0], {basedir: rootDirname}, function(err, res) {
+                if (err) {
+                    return reject(err);
+                }
+                resolve([res]);
+            });
+        });
     },
     "require_fractal": function() {
         var d = Q.defer();
         d.resolve([config.LIB_PATH]);
         return d.promise;
+    },
+    "require_self": function(root, args) {
+        return new Promise(function(resolve, reject) {
+            resolve(root);
+        });
     }
 };
