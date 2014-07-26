@@ -21,7 +21,12 @@ function AssetNode(options) {
 
 AssetNode.prototype = {
     relativePath: function() {
-        return path.relative(config.assetPath, this.path);
+        var relativePath = path.relative(config.assetPath, this.path);
+        if (relativePath.length && relativePath[0] !== '.') {
+            // make it relative to current asset path
+            relativePath = './' + relativePath;
+        }
+        return relativePath;
     },
     absolutePath: function() {
         return path.resolve(config.assetPath, this.path);
