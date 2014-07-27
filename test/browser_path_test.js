@@ -20,9 +20,25 @@ describe.only('./browser_path.js', function() {
         });
     });
 
+    describe('#splitPath', function() {
+        it('splits path into parts', function() {
+            var res = browserPath.splitPath('./../a/b/./c.js');
+            expect(res).to.eql(['.', '..', 'a', 'b', '.', 'c.js']);
+        });
+
+    });
+
     describe('#resolve', function() {
-        it('true', function() {
-            expect(true).to.be.true;
+        it('resolves to the given relative root', function() {
+            var dirname = './a/b/c/';
+            var res = browserPath.resolve(dirname, '../../d.js');
+            expect(res).to.equal('./a/d.js');
+        });
+
+        it('resolves to files above the root', function() {
+            var dirname = './a/';
+            var res = browserPath.resolve(dirname, '../../d.js');
+            expect(res).to.equal('../d.js');
         });
     });
 });
