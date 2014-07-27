@@ -19,8 +19,10 @@ describe.only('./browser_path.js', function() {
             expect(browserPath.dirname('../abc')).to.equal('../');
         });
 
-        it('returns empty string for empty string', function() {
-            expect(browserPath.dirname('')).to.equal('');
+        it('throws for empty string', function() {
+            expect(function() {
+                browserPath.dirname('');
+            }).to.throw('argument');
         });
     });
 
