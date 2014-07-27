@@ -69,5 +69,4 @@ make karma
 ##### Features TODO
 - Q => ES-6 Promises
 - get rid of mutable config
-- directive regex for coffee script
 - bulding bundles for prod
