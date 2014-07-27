@@ -18,6 +18,10 @@ describe.only('./browser_path.js', function() {
         it('returns ../ for ../abc ', function() {
             expect(browserPath.dirname('../abc')).to.equal('../');
         });
+
+        it('returns empty string for empty string', function() {
+            expect(browserPath.dirname('')).to.equal('');
+        });
     });
 
     describe('#splitPath', function() {

@@ -1,7 +1,13 @@
 var DIRNAME_REGEX = /^([\s\S]*?)(?:(?:\.{1,2}|[^\/]+?|)(?:\.[^.\/]*|))(?:[\/]*)$/;
 
 exports.dirname = function(path) {
-    return DIRNAME_REGEX.exec(path)[1];
+    var match = DIRNAME_REGEX.exec(path),
+        result;
+    if (match) {
+        result = match[1];
+        result.length && (result.slice(-1) !== '/') && result.unshift('/');
+    }
+    return (result || '');
 };
 
 exports.splitPath = function(path) {
