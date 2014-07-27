@@ -17,11 +17,13 @@
   },
   "homepage": "https://github.com/dmitriiabramov/fractaljs",
   "dependencies": {
+    "JSONStream": "^0.8.4",
     "coffee-script": "1.7.1",
     "es6-promise": "1.0.0",
     "glob": "3.2.9",
     "haml-coffee": "1.14.1",
     "minimist": "0.0.8",
+    "module-deps": "^3.5.3",
     "q": "1.0.1",
     "resolve": "^0.7.4",
     "walk": "2.3.3"

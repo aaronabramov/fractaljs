@@ -16,6 +16,8 @@ var config = require('./config.js'),
     Promise = require('es6-promise').Promise,
     walk = require('walk'),
     nodeResolve = require('resolve'),
+    mdeps = require('module-deps'),
+    JSONStream = require('JSONStream'),
     // list of directives that are convertible to files
     DIRECTIVES = {
         "require_tree": true,
@@ -23,7 +25,9 @@ var config = require('./config.js'),
         "require": true,
         "require_fractal": true,
         "require_self": true
-    };
+    },
+    // argument for recursively resolve node `require` deps
+    DEPS_ARG = 'deps';
 
 module.exports = {
     /**
@@ -107,6 +111,30 @@ module.exports = {
         return deferred.promise;
     },
     "require": function(root, args) {
+        // if `DEPS_ARG` argument is present then resolve dependency
+        // tree of given node module and return the list of all required files
+        if (!!~args.indexOf(DEPS_ARG)) {
+            return new Promise(function(resolve, reject) {
+                var paths = [];
+                var dirname = path.dirname(root);
+                console.log('args0', args[0]);
+                nodeResolve(args[0], {basedir: dirname}, function(err, res) {
+                    md = mdeps();
+                    md.on('file', function(file) {
+                        paths.push(file);
+                        console.log(file);
+                    });
+                    md.on('end', function() {
+                        console.log('done');
+                        resolve(paths);
+                    });
+                    // no idea. some magic of this package. doesn't
+                    // trigger `end` event unless data is listened to
+                    md.on('data', function() {});
+                    md.end({file: res});
+                });
+            });
+        }
         return new Promise(function(resolve, reject) {
             var rootDirname = path.dirname(root);
             nodeResolve(args[0], {basedir: rootDirname}, function(err, res) {
