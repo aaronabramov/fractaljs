@@ -1,6 +1,6 @@
 Fractaljs
 =============
-[![Build Status](https://travis-ci.org/dmitriiabramov/fractaljs.svg?branch=master)](https://travis-ci.org/dmitriiabramov/async-require)
+[![Build Status](https://travis-ci.org/dmitriiabramov/fractaljs.svg?branch=master)](https://travis-ci.org/dmitriiabramov/fractaljs)
 
 Bundle javascript modules + lazy load in browser
 
