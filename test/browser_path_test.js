@@ -35,10 +35,18 @@ describe.only('./browser_path.js', function() {
             expect(res).to.equal('./a/d.js');
         });
 
+        it('resolves to relative root', function() {
+            var dirname = './a/';
+            expect(browserPath.resolve(dirname, '../d.js'))
+                .to.equal('./d.js');
+        });
+
         it('resolves to files above the root', function() {
             var dirname = './a/';
-            var res = browserPath.resolve(dirname, '../../d.js');
-            expect(res).to.equal('../d.js');
+            expect(browserPath.resolve(dirname, '../../d.js'))
+                .to.equal('../d.js');
+            expect(browserPath.resolve(dirname, '../../../d.js'))
+                .to.equal('../../d.js');
         });
     });
 });

@@ -41,7 +41,7 @@ exports.resolve = function() {
         do {
             res.unshift('..');
             up--;
-        } while (up);
+        } while (up >= 0);
     }
     res = res.join('/');
     return res;
