@@ -67,6 +67,7 @@ make karma
 ```
 
 ##### Features TODO
+- require_self breaks references list
 - Q => ES-6 Promises
 - get rid of mutable config
 - bulding bundles for prod
