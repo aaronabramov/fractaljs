@@ -58,7 +58,7 @@ function makeBundle(filePath) {
             var assetList = _flattenAssetTree(assetNode);
             assetList.forEach(preprocessors.preprocess);
             var bundleSrc = assetList.map(function(assetNode) {
-                return assetNode.content;
+                return assetNode.ignore ? '' : assetNode.content;
             }).join("\n");
             // TODO: recur referencing
             references.makeReferencesFunction(assetList).then(function(func) {
@@ -78,9 +78,7 @@ function makeBundle(filePath) {
  */
 function _flattenAssetTree(assetNode, _list) {
     _list = (_list || []);
-    if (!assetNode.ignore) {
-        _list.push(assetNode);
-    }
+    _list.push(assetNode);
     assetNode.children.forEach(function(child) {
         _flattenAssetTree(child, _list);
     });
