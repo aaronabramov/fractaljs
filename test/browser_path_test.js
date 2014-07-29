@@ -54,5 +54,17 @@ describe.only('./browser_path.js', function() {
             expect(browserPath.resolve(dirname, '../../../d.js'))
                 .to.equal('../../d.js');
         });
+
+        it('resolves relative to relative', function() {
+            var dirname = './components/';
+            expect(browserPath.resolve(dirname, './included_in_nested_bundle2.js'))
+                .to.equal('./components/included_in_nested_bundle2.js');
+        });
+
+        it('resolves from above root', function() {
+            var dirname = '../node_modules/react/';
+            expect(browserPath.resolve(dirname, './lib/React'))
+                .to.equal('../node_modules/react/lib/React');
+        });
     });
 });

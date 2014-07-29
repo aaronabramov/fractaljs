@@ -4,8 +4,7 @@ var assetTree = require('./asset_tree.js'),
     path = require('path'),
     config = require('./config.js'),
     Promise = require('es6-promise').Promise,
-    references = require('./references.js'),
-    Q = require('q');
+    references = require('./references.js');
 
 
 /**

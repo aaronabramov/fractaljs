@@ -39,86 +39,60 @@
         };
     }
 
-/*****/    // joyent/node 'path' module
-/*****/
-/*****/    // Split a filename into [root, dir, basename, ext], unix version
-/*****/    // 'root' is just a slash, or nothing.
-/*****/    var splitPathRe =
-/*****/        /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-/*****/    var splitPath = function(filename) {
-/*****/        return splitPathRe.exec(filename).slice(1);
-/*****/    };
-/*****/
-/*****/    window.splitPath = splitPath;
-/*****/
-/*****/    function path_dirname(path) {
-/*****/        var result = splitPath(path),
-/*****/            root = result[0],
-/*****/            dir = result[1];
-/*****/
-/*****/        if (!root && !dir) {
-/*****/            // No dirname whatsoever
-/*****/            return '.';
-/*****/        }
-/*****/
-/*****/        if (dir) {
-/*****/            // It has a dirname, strip trailing slash
-/*****/            dir = dir.substr(0, dir.length - 1);
-/*****/        }
-/*****/
-/*****/        return root + dir;
-/*****/    }
-/*****/
-/*****/    // resolves . and .. elements in a path array with directory names there
-/*****/    // must be no slashes, empty elements, or device names (c:\) in the array
-/*****/    // (so also no leading and trailing slashes - it does not distinguish
-/*****/    // relative and absolute paths)
-/*****/    function normalizeArray(parts, allowAboveRoot) {
-/*****/        // if the path tries to go above the root, `up` ends up > 0
-/*****/        var up = 0;
-/*****/        for (var i = parts.length - 1; i >= 0; i--) {
-/*****/            var last = parts[i];
-/*****/            if (last === '.') {
-/*****/                parts.splice(i, 1);
-/*****/            } else if (last === '..') {
-/*****/                parts.splice(i, 1);
-/*****/                up++;
-/*****/            } else if (up) {
-/*****/                parts.splice(i, 1);
-/*****/                up--;
-/*****/            }
-/*****/        }
-/*****/
-/*****/        // if the path is allowed to go above the root, restore leading ..s
-/*****/        if (allowAboveRoot) {
-/*****/            for (; up--; up) {
-/*****/                parts.unshift('..');
-/*****/            }
-/*****/        }
-/*****/
-/*****/        return parts;
-/*****/    }
-/*****/
-/*****/    function normalize(path) {
-/*****/        var isAbsolute = path.charAt(0) === '/';
-/*****/            trailingSlash = path.substr(-1) === '/';
-/*****/
-/*****/        // Normalize the path
-/*****/        path = normalizeArray(path.split('/').filter(function(p) {
-/*****/            return !!p;
-/*****/        }), !isAbsolute).join('/');
-/*****/
-/*****/        if (!path && !isAbsolute) {
-/*****/            path = '.';
-/*****/        }
-/*****/        if (path && trailingSlash) {
-/*****/            path += '/';
-/*****/        }
-/*****/
-/*****/        return (isAbsolute ? '/' : '') + path;
-/*****/    }
-/*****/
-/*****/
+    /*****************************************************************/
+    var DIRNAME_REGEX = /^([\s\S]*?)(?:(?:\.{1,2}|[^\/]+?|)(?:\.[^.\/]*|))(?:[\/]*)$/;
+
+    var dirname = function(path) {
+        if (!path) {
+            throw new Error('argument should be not empty string');
+        }
+        var match = DIRNAME_REGEX.exec(path);
+        return match[1];
+    };
+
+    var splitPath = function(path) {
+        var parts = path.split('/');
+        var res = [];
+        for (var i = 0; i < parts.length; i++) {
+            parts[i] || parts.splice(i, 1);
+        }
+        return parts;
+    };
+
+    var resolvePath = function() {
+        var paths = Array.prototype.slice.apply(arguments);
+        var parts = [];
+        var res = [];
+        var up = 0;
+        paths.forEach(function(path) {
+            parts = parts.concat(splitPath(path));
+        });
+        parts.forEach(function(part) {
+            switch (part) {
+                case '..':
+                    up++;
+                    res.length && res.pop();
+                    break;
+                case '.':
+                    res.length || res.push('.');
+                    break;
+                default:
+                    res.push(part);
+                    up--;
+                    break;
+
+            }
+        });
+        if (up >= 0) {
+            do {
+                res.unshift('..');
+                up--;
+            } while (up >= 0);
+        }
+        res = res.join('/');
+        return res;
+    };
+    /*****************************************************************/
 
     /**
      * resolve module path based on parent if it exists
@@ -130,10 +104,11 @@
     function resolve(request, parentModule) {
         var resolved;
         if (parentModule) {
-            var dirname = path_dirname(parentModule.filename);
+            var _dirname = dirname(parentModule.filename);
             // hacky way to get normalized path relative to `config.assetpath`
             // TODO: rewrite path resolving
-            resolved = './' + normalize(dirname + '/' + request);
+            resolved = resolvePath(_dirname, request);
+            console.log('----', _dirname, request, 'res', resolved);
         } else {
             resolved = request;
         }
@@ -161,7 +136,7 @@
         var filename = resolve(request, __module__),
             module = modules[filename];
         if (!module) {
-            throw new Error('module [' + request + '] not found');
+            throw new Error('module [' + filename + '] not found');
         }
         if (module.exports) {
             return module.exports;
