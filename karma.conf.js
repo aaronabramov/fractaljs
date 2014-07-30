@@ -5,7 +5,7 @@ module.exports = function(config) {
     config.set({
 
         // base path that will be used to resolve all patterns (eg. files, exclude)
-        basePath: '',
+        basePath: __dirname,
 
 
         // frameworks to use
@@ -15,8 +15,9 @@ module.exports = function(config) {
 
         // list of files / patterns to load in the browser
         files: [
+            'karma/support/es5-shim.js',
             'karma/support/setup.js',
-            'src/assets/async_require.js',
+            'src/assets/fractal.js',
             'karma/**/*_test.js'
         ],
 
