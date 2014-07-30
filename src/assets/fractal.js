@@ -2,7 +2,8 @@
     // Cache variables
     var modules = {}, // cache of modules
         scriptTags = [],
-        references = {}; // cache of reference maps
+        references = {}, // cache of reference maps
+        EXTENSIONS = ['js'];
 
     /**
      * Load script from the path and bind callback on onload event passing
@@ -70,24 +71,32 @@
         parts.forEach(function(part) {
             switch (part) {
                 case '..':
-                    up++;
-                    res.length && res.pop();
+                    if (res.length) {
+                        if (res.length === 1 && res[0] === '.') {
+                            res.pop();
+                            up++;
+                        } else {
+                            res.pop();
+                        }
+                    } else {
+                        up++;
+                    }
                     break;
                 case '.':
                     res.length || res.push('.');
                     break;
                 default:
                     res.push(part);
-                    up--;
+                    // up--;
                     break;
 
             }
         });
         if (up >= 0) {
-            do {
+            while (up) {
                 res.unshift('..');
                 up--;
-            } while (up >= 0);
+            }
         }
         res = res.join('/');
         return res;
@@ -135,6 +144,14 @@
     function require(__module__, request) {
         var filename = resolve(request, __module__),
             module = modules[filename];
+        if (!module) {
+            for(var i = 0, l = EXTENSIONS.length; i < l; i++) {
+                module = modules[filename + '.' + EXTENSIONS[i]];
+                if (module) {
+                    break;
+                }
+            }
+        }
         if (!module) {
             throw new Error('module [' + filename + '] not found');
         }
