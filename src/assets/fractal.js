@@ -200,7 +200,11 @@
     define.modules = modules;
     define.scriptTags = scriptTags;
 
+    /****************** exports *******************/
     window.require = makeRequireFn();
+    window.require.dirname = dirname;
+    window.require.splitPath = splitPath;
+    window.require.resolvePath = resolvePath;
     window.require.loadReferences = loadReferences;
     window.require.references = references;
     window.use = use;
