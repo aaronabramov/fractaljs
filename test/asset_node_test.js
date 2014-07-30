@@ -2,7 +2,7 @@ var AssetNode = require('../src/asset_node.js'),
     path = require('path'),
     expect = require('chai').expect;
 
-describe('asset_node.js', function() {
+describe.only('asset_node.js', function() {
     describe('#fetchContent', function() {
         beforeEach(function() {
             this.filePath = path.resolve(__dirname, './fixtures/asset_node/file.coffee');
