@@ -19,14 +19,4 @@ describe('general behavior', function () {
                 .to.throw(/not found/);
         });
     });
-
-    describe('#use', function () {
-        it('requires module async if its defined', function (done) {
-            define('test-module', function (exports) { exports.a = 'test'; } );
-            use('test-module', function(module) {
-                module.a.should.equal('test');
-                done();
-            });
-        });
-    });
 });
