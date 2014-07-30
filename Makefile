@@ -6,7 +6,7 @@ mocha:
 
 test:
 	$(MAKE) mocha
-	# $(MAKE) karma
+	$(MAKE) karma
 
 watch_mocha:
 	$(MAKE) arg="--watch" mocha
