@@ -25,6 +25,7 @@
     "minimist": "0.0.8",
     "module-deps": "^3.5.3",
     "q": "1.0.1",
+    "react-tools": "^0.11.1",
     "resolve": "^0.7.4",
     "walk": "2.3.3"
   },

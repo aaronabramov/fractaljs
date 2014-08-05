@@ -3,7 +3,8 @@ var path = require('path'),
     EXTENSION_TO_FILETYPE_MAP = {
         'js': 'js',
         'hamlc': 'hamlc',
-        'coffee': 'coffee'
+        'coffee': 'coffee',
+        'jsx': 'jsx'
     };
 
 module.exports = {

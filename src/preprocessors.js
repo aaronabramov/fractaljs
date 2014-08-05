@@ -3,11 +3,13 @@ var utils = require('./utils.js'),
     PREPROCESSORS = {
         'hamlc': require('./preprocessors/hamlc.js'),
         'coffee': require('./preprocessors/coffee.js'),
-        'module': require('./preprocessors/module.js')
+        'module': require('./preprocessors/module.js'),
+        'jsx': require('./preprocessors/jsx.js')
     },
     TYPE_TO_PREPROCESSOR_MAP = {
         'hamlc': 'hamlc',
-        'coffee': 'coffee'
+        'coffee': 'coffee',
+        'jsx': 'jsx'
     };
 
 /**
@@ -30,7 +32,7 @@ function compile(assetNode) {
         preprocessor = PREPROCESSORS[preprocessorName];
 
     if (preprocessor) {
-        assetNode.content = preprocessor(assetNode);
+        preprocessor(assetNode);
     }
     return assetNode;
 }
