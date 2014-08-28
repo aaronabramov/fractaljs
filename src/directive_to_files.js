@@ -12,7 +12,6 @@ var config = require('./config.js'),
     walk = require('walk'),
     path = require('path'),
     fs = require('fs'),
-    Q = require('q'),
     Promise = require('es6-promise').Promise,
     walk = require('walk'),
     nodeResolve = require('resolve'),
@@ -34,7 +33,7 @@ module.exports = {
      * @param root {String} path of the file that contains directive
      * @param directiveType {String} (require_tree, require_directory...)
      * @param args {Array} ['./tree', 'module']
-     * @return {Q.promise} resolves with file list
+     * @return {Promise} resolves with file list
      */
     getFiles: function(root, directiveType, args) {
         // try to convert to file list. if not convertible then skip
@@ -48,67 +47,67 @@ module.exports = {
         if (!root) {
             throw new Error('root is required');
         }
-        var deferred = Q.defer(),
-            files = [],
-            directory = args[0],
-            walker;
-        if (!directory) {
-            throw new Error('require_directory path should be a directory');
-        }
-        directory = path.resolve(path.dirname(root), directory);
-        walker = walk.walk(directory);
-        walker.on('file', function(root, fileStats, next) {
-            var fileName = path.resolve(config.assetPath, root + '/' + fileStats.name);
-            files.push(fileName);
-            next();
-        });
-        walker.on('end', function() {
-            deferred.resolve(files);
-        });
-        return deferred.promise;
+        return new Promise(function(resolve, reject) {
+            var files = [],
+                directory = args[0],
+                walker;
+            if (!directory) {
+                throw new Error('require_directory path should be a directory');
+            }
+            directory = path.resolve(path.dirname(root), directory);
+            walker = walk.walk(directory);
+            walker.on('file', function(root, fileStats, next) {
+                var fileName = path.resolve(config.assetPath, root + '/' + fileStats.name);
+                files.push(fileName);
+                next();
+            });
+            walker.on('end', function() {
+                resolve(files);
+            });
+        })
     },
     "require_directory": function(root, args) {
         if (!root) {
             throw new Error('root is required');
         }
-        var deferred = Q.defer(),
-            files = [],
-            directory = args[0];
-        if (!directory) {
-            throw new Error('require_directory path should be a directory');
-        }
-        directory = path.resolve(path.dirname(root), directory);
-        fs.readdir(directory, function(err, filePaths) {
-            if (err) {
-                return deferred.reject(err);
+        return new Promise(function(resolve, reject) {
+            var files = [],
+                directory = args[0];
+            if (!directory) {
+                throw new Error('require_directory path should be a directory');
             }
-            var promises = filePaths.map(function(filePath) {
-                var deferred = Q.defer();
-                filePath = path.resolve(root, directory, filePath);
-                fs.stat(filePath, function(err, stats) {
-                    if (err) {
-                        deferred.reject(err);
-                    }
-                    deferred.resolve({
-                        path: filePath,
-                        isFile: stats.isFile()
+            directory = path.resolve(path.dirname(root), directory);
+            fs.readdir(directory, function(err, filePaths) {
+                if (err) {
+                    return reject(err);
+                }
+                var promises = filePaths.map(function(filePath) {
+                    return new Promise(function(resolve, reject) {
+                        filePath = path.resolve(root, directory, filePath);
+                        fs.stat(filePath, function(err, stats) {
+                            if (err) {
+                                reject(err);
+                            }
+                            resolve({
+                                path: filePath,
+                                isFile: stats.isFile()
+                            });
+                        });
                     });
                 });
-                return deferred.promise;
-            });
-            Q.all(promises).then(function(files) {
-                var list = [];
-                files.forEach(function(file) {
-                    if (file.isFile) {
-                        list.push(file.path);
-                    }
+                Promise.all(promises).then(function(files) {
+                    var list = [];
+                    files.forEach(function(file) {
+                        if (file.isFile) {
+                            list.push(file.path);
+                        }
+                    });
+                    resolve(list);
+                }).catch(function(err) {
+                    reject(err);
                 });
-                deferred.resolve(list);
-            }).fail(function(err) {
-                deferred.reject(err);
             });
         });
-        return deferred.promise;
     },
     "require": function(root, args) {
         // if `DEPS_ARG` argument is present then resolve dependency
@@ -146,9 +145,9 @@ module.exports = {
         });
     },
     "require_fractal": function() {
-        var d = Q.defer();
-        d.resolve([config.LIB_PATH]);
-        return d.promise;
+        return new Promise(function(resolve, reject) {
+            resolve([config.LIB_PATH]);
+        });
     },
     "require_self": function(root, args) {
         return new Promise(function(resolve, reject) {

@@ -3,7 +3,6 @@
  */
 var config = require('./config.js'),
     Directive = require('./directive.js'),
-    Q = require('q'),
     Promise = require('es6-promise').Promise,
     directiveToFiles = require('./directive_to_files.js'),
     build = require('./build.js'),
