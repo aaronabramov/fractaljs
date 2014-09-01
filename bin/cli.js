@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
+// fractaljs ./myBundle.js --output-dir ./public/js
 var argv = require('minimist')(process.argv.slice(2)),
-    inputPath = argv['_'][0],
+    inputPath = argv._[0],
     outputDir = argv['output-dir'],
     fs = require('fs'),
     path = require('path'),
@@ -19,12 +20,16 @@ build.makeBundle(inputPath).then(function(output) {
 
     mkdirp(path.dirname(outputPath), function(err) {
         if (err) {
-            throw err
+            throw err;
         } else {
             fs.writeFile(outputPath, output, function(err) {
-                if (err) throw err;
-                console.log('> ' + outputPath + ' compiled')
-            })
+                if (err) {
+                    throw err;
+                }
+                console.log('> ' + outputPath + ' compiled');
+            });
         }
-    })
-}).catch(function(error) { console.log(error) })
+    });
+}).catch(function(error) {
+    console.log(error);
+});
