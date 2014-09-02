@@ -2,12 +2,25 @@ var path = require('path'),
     config = require('../config.js'),
     DEFINE = 'define("',
     HEADER = '", function (exports, module, require) {\n',
-    FOOTER = '});';
+    FN_CLOSER = '}, ',
+    CLOSER = ');';
 
 module.exports = function(assetNode) {
-    var filePath = assetNode.relativePath();
+    var filePath = assetNode.relativePath(),
+        wrappedAlias = 'null';
+
+    if (assetNode.alias) {
+        wrappedAlias = "'" + assetNode.alias + "'";
+    }
+
     checkName(filePath);
-    return DEFINE + makeModuleName(assetNode) + HEADER + assetNode.content + FOOTER;
+    return DEFINE +
+        makeModuleName(assetNode) +
+        HEADER +
+        assetNode.content +
+        FN_CLOSER +
+        wrappedAlias +
+        CLOSER;
 };
 
 /**

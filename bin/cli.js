@@ -10,13 +10,13 @@ var argv = require('minimist')(process.argv.slice(2)),
     config = require('../src/config.js'),
     build = require('../src/build.js');
 
-config.assetPath = '';
+config.assetPath = path.dirname(inputPath);
 
 if (!path) throw new Error('File path should be specified');
 if (!outputDir) throw new Error('Output dir path should be specified');
 
-build.makeBundle(inputPath).then(function(output) {
-    var outputPath = path.join(outputDir, inputPath);
+build.makeBundle(path.basename(inputPath)).then(function(output) {
+    var outputPath = path.join(outputDir, path.basename(inputPath));
 
     mkdirp(path.dirname(outputPath), function(err) {
         if (err) {
@@ -31,5 +31,6 @@ build.makeBundle(inputPath).then(function(output) {
         }
     });
 }).catch(function(error) {
-    console.log(error);
+    console.error(error);
+    throw(error);
 });

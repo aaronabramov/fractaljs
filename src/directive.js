@@ -29,16 +29,29 @@ Directive.prototype = {
      * @return {Promise} resolves with list {AssetNode}s
      */
     filesToRequire: function() {
-        var _this = this;
+        var _this = this,
+            rootNodeArray = [];
+        /* dirty hack start */
         return new Promise(function(resolve, reject) {
             directiveToFiles.getFiles(
                 _this.path, _this.type, _this.args
             ).then(function(filePaths) {
+
+                if (_this.type == 'require' &&
+                    _this.args[0][0] !== '.') {
+                    var rootModule = filePaths.shift(),
+                        rootAssetNode = _this._makeAssetNode(rootModule);
+                    rootAssetNode.alias = _this.args[0];
+                    rootNodeArray.push(rootAssetNode);
+                }
+
                 filePaths = filePaths.map(function(filePath) {
                     return path.relative(config.assetPath, filePath);
                 });
-                resolve(filePaths.map(_this._makeAssetNode));
+                resolve(rootNodeArray.concat(
+                    filePaths.map(_this._makeAssetNode)));
             }).catch(reject);
+            /* dirty hack end */
         });
     },
     /**

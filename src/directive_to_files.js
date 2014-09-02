@@ -64,7 +64,7 @@ module.exports = {
             walker.on('end', function() {
                 resolve(files);
             });
-        })
+        });
     },
     "require_directory": function(root, args) {
         if (!root) {
@@ -116,15 +116,12 @@ module.exports = {
             return new Promise(function(resolve, reject) {
                 var paths = [];
                 var dirname = path.dirname(root);
-                console.log('args0', args[0]);
                 nodeResolve(args[0], {basedir: dirname}, function(err, res) {
                     md = mdeps();
                     md.on('file', function(file) {
                         paths.push(file);
-                        console.log(file);
                     });
                     md.on('end', function() {
-                        console.log('done');
                         resolve(paths);
                     });
                     // no idea. some magic of this package. doesn't

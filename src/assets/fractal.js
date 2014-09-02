@@ -31,13 +31,18 @@
      * @param fn {Function} function that defines module
      */
     function define(filename, fn, alias) {
-        // Cache module function in closure var
-        modules[filename] = {
+        var module = {
             filename: filename, // relative to root assetPath
             fn: fn, // module function that takes (exports, moudle, require)
             alias: alias, // optional
             exports: null // lazily evaluated during `require` step
         };
+
+        // Cache module function in closure var
+        modules[filename] = module;
+        if (alias) {
+            modules[alias] = module;
+        }
     }
 
     /*****************************************************************/
@@ -145,7 +150,7 @@
         var filename = resolve(request, __module__),
             module = modules[filename];
         if (!module) {
-            for(var i = 0, l = EXTENSIONS.length; i < l; i++) {
+            for (var i = 0, l = EXTENSIONS.length; i < l; i++) {
                 module = modules[filename + '.' + EXTENSIONS[i]];
                 if (module) {
                     break;
