@@ -147,18 +147,21 @@
      * @throws Will throw error if module is not found in cache.
      */
     function require(__module__, request) {
-        var filename = resolve(request, __module__),
-            module = modules[filename];
+        // look for aliased version
+        if (!modules[request]) {
+            request = resolve(request, __module__);
+        }
+        var module = modules[request];
         if (!module) {
             for (var i = 0, l = EXTENSIONS.length; i < l; i++) {
-                module = modules[filename + '.' + EXTENSIONS[i]];
+                module = modules[request + '.' + EXTENSIONS[i]];
                 if (module) {
                     break;
                 }
             }
         }
         if (!module) {
-            throw new Error('module [' + filename + '] not found');
+            throw new Error('module [' + request + '] not found');
         }
         if (module.exports) {
             return module.exports;
